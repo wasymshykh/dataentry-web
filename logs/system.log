@@ -1,0 +1,4 @@
+{"status":false,"message":"Logs.create - E.02: Failure","type":"settings_fetch","text":"protocol was undefined in settings array","raw":"","created":"Dec 04, 2020 08:58 PM"}
+{"status":false,"message":"Logs.create - E.02: Failure","type":"settings_fetch","text":"site_url was undefined in settings array","raw":"","created":"Dec 04, 2020 08:58 PM"}
+{"status":false,"message":"Logs.create - E.02: Failure","type":"settings_fetch","text":"site_title was undefined in settings array","raw":"","created":"Dec 04, 2020 08:58 PM"}
+{"status":false,"message":"Logs.create - E.02: Failure","type":"settings_fetch","text":"site_title was undefined in settings array","raw":"","created":"Dec 04, 2020 08:58 PM"}
