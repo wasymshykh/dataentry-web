@@ -1,15 +1,15 @@
 <div class="row">
     <div class="col-3">
         <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-            <a class="nav-link active" id="v-pills-manage-tab" data-toggle="pill" href="#v-pills-manage" role="tab" aria-controls="v-pills-manage" aria-selected="true">Manage Users</a>
-            <a class="nav-link" id="v-pills-add-tab" data-toggle="pill" href="#v-pills-add" role="tab" aria-controls="v-pills-add" aria-selected="false">Add User</a>
+            <a class="nav-link <?=empty($errors) && !$success ? 'active' : ''?>" id="v-pills-manage-tab" data-toggle="pill" href="#v-pills-manage" role="tab" aria-controls="v-pills-manage" aria-selected="true">Manage Users</a>
+            <a class="nav-link <?=!empty($errors) || $success ? 'active' : ''?>" id="v-pills-add-tab" data-toggle="pill" href="#v-pills-add" role="tab" aria-controls="v-pills-add" aria-selected="false">Add User</a>
             <a class="nav-link" id="v-pills-logs-tab" data-toggle="pill" href="#v-pills-logs" role="tab" aria-controls="v-pills-logs" aria-selected="false">View Logs</a>
         </div>
     </div>
 
     <div class="col-9">
         <div class="tab-content" id="v-pills-tabContent">
-            <div class="tab-pane fade show active" id="v-pills-manage" role="tabpanel" aria-labelledby="v-pills-manage-tab">
+            <div class="tab-pane fade <?=empty($errors) && !$success ? 'show active' : ''?>" id="v-pills-manage" role="tabpanel" aria-labelledby="v-pills-manage-tab">
                 <div class="row">
                     <div class="col-12">
                         <div class="border-bottom pt-2 pb-2 mb-2">
@@ -34,6 +34,7 @@
                             </thead>
                             <tbody>
                                 <?php foreach ($users as $user) : ?>
+                                <tr>
                                     <td><?= $user['user_id'] ?></td>
                                     <td><?= $user['user_username'] ?></td>
                                     <td><?= ($user['user_role'] === 'A' ? 'Admin' : ($user['user_role'] === 'M' ? 'Manager' : ($user['user_role'] === 'N' ? 'Normal' : 'undefined'))) ?></td>
@@ -43,6 +44,7 @@
                                         <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editUser" data-userid="<?= $user['user_id'] ?>" data-username="<?= $user['user_username'] ?>" data-status="<?= $user['user_status'] ?>" data-type="<?= $user['user_type'] ?>">Edit</button>
 
                                     </td>
+                                </tr>
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
@@ -50,8 +52,115 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade" id="v-pills-add" role="tabpanel" aria-labelledby="v-pills-add-tab">...</div>
-            <div class="tab-pane fade" id="v-pills-logs" role="tabpanel" aria-labelledby="v-pills-logs-tab">...</div>
+
+            <div class="tab-pane fade <?=!empty($errors) || $success ? 'show active' : ''?>" id="v-pills-add" role="tabpanel" aria-labelledby="v-pills-add-tab">
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="border-bottom pt-2 pb-2 mb-2">
+                            <h3 class="text-center font-weight-light">
+                                Add a <b>User</b>
+                            </h3>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-8 offset-lg-2 mb-4 mt-2">
+                        
+                        <div class="card">
+                            <div class="card-body">
+                            <?php if(!empty($errors)): ?>
+                                <div class="alert alert-danger">
+                                    <dl>
+                                        <dt>Error!</dt>
+                                    <?php foreach($errors as $error): ?>
+                                        <dd><?=$error?></dd>            
+                                    <?php endforeach; ?>
+                                    </dl>
+                                </div>
+                            <?php endif; ?>
+                            <?php if($success): ?>
+                                <div class="alert alert-success">
+                                    <?=$success?>
+                                </div>
+                            <?php endif; ?>
+
+                                <form method="POST" action="<?= $_SERVER['PHP_SELF'] ?>">
+                                    <input type="hidden" name="create">
+                                    <div class="form-group">
+                                        <label for="username" class="col-form-label">Username:</label>
+                                        <input type="text" class="form-control" value="<?=$_POST['username']??''?>" name="username" id="username">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password" class="col-form-label">Password:</label>
+                                        <input type="password" class="form-control" value="<?=$_POST['password']??''?>" name="password" id="password">
+                                        <small class="form-text text-muted">Leave empty if you don't want to change</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="type" class="col-form-label">Type:</label>
+                                        <select name="type" id="type" class="form-control">
+                                            <option value="A" <?=!empty($_POST['type']) && $_POST['type'] === 'A' ? 'selected':''?>>Admin</option>
+                                            <option value="M" <?=!empty($_POST['type']) && $_POST['type'] === 'M' ? 'selected':''?>>Manager</option>
+                                            <option value="N" <?=!empty($_POST['type']) && $_POST['type'] === 'N' ? 'selected':''?>>Normal</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="status" class="col-form-label">Status:</label>
+                                        <select name="status" id="status" class="form-control">
+                                            <option value="A" <?=!empty($_POST['status']) && $_POST['status'] === 'A' ? 'selected':''?>>Active</option>
+                                            <option value="U" <?=!empty($_POST['status']) && $_POST['status'] === 'U' ? 'selected':''?>>Inactive</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group text-center">
+                                        <button type="submit" class="btn btn-success">
+                                            Add User
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="tab-pane fade" id="v-pills-logs" role="tabpanel" aria-labelledby="v-pills-logs-tab">
+
+                <div class="col-12">
+                    <div class="border-bottom pt-2 pb-2 mb-2">
+                        <h3 class="text-center font-weight-light">
+                            Action <b>Logs</b>
+                        </h3>
+                    </div>
+                </div>
+
+                <div class="col-lg-8 offset-lg-2 mb-4 mt-2">
+                    
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Log type</th>
+                                        <th>Log message</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($site_logs as $site_log): ?>
+                                        <tr>
+                                            <td><?=$site_log['sitelog_type']?></td>
+                                            <td><?=$site_log['sitelog_text']?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
@@ -61,13 +170,14 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editUserLabel">New message</h5>
+                <h5 class="modal-title" id="editUserLabel">Edit User</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form method="POST" action="<?= $_SERVER['PHP_SELF'] ?>" name="edit">
+                <form method="POST" action="<?= $_SERVER['PHP_SELF'] ?>">
+                    <input type="hidden" name="edit">
                     <input type="hidden" name="user_id" id="user-id-input">
                     <div class="form-group">
                         <label for="e_username" class="col-form-label">Username:</label>
