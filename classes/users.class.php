@@ -29,9 +29,8 @@ class Users
 
         if ($stmt->execute()) {
             return $stmt->fetch();
-        } else {
-            return false;
         }
+        return false;
     }
 
     public function get_by_username($username)
@@ -72,11 +71,42 @@ class Users
     }
 
     public function get_site_logs () {
-        $s = $this->db->prepare("SELECT * FROM `site_logs`");
+        $s = $this->db->prepare("SELECT * FROM `site_logs` ORDER BY `sitelog_created` DESC");
         if($s->execute()) {
             return $s->fetchAll();
         }
         return [];
+    }
+
+    public function edit_user($values, $user_id, $log) {
+        $u = "";
+        $c = 0;
+        foreach ($values as $col => $value) {
+            if ($c > 0) {
+                $u .= ", ";
+            }
+            $u .= "`$col` = '$value'";
+            $c++;
+        }
+
+        $s = $this->db->prepare("UPDATE `users` SET $u WHERE `user_id` = :i");
+        $s->bindParam(":i", $user_id);
+        if ($s->execute()) {
+            $this->create_log("user_edit", $log);
+            return ['status' => true];
+        }
+        return ['status' => false, 'message' => "Cannot update the user"];
+    }
+
+    public function delete_user($user_id, $log)
+    {
+        $s = $this->db->prepare("DELETE FROM `users` WHERE `user_id` = :i");
+        $s->bindParam(":i", $user_id);
+        if ($s->execute()) {
+            $this->create_log("user_delete", $log);
+            return ['status' => true];
+        }
+        return ['status' => false, 'message' => "Cannot delete the user"];
     }
 
 

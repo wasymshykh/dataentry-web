@@ -43,6 +43,7 @@
     $settings = new Settings($db);
     
     define('URL', $settings->protocol().'://'.$settings->site_url());
+    define('SUPER_ADMIN_ID', $settings->fetch('super_admin_id'));
     
     $auth = new Auth($db);
     $logged = $auth->check_auth();

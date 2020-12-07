@@ -22,7 +22,7 @@ function normal_date($date, $format = 'M d, Y h:i A')
     return date_format($d, $format);
 }
 
-function current_date($format = 'M d, Y h:i A')
+function current_date($format = 'Y-m-d H:i:s')
 {
     return date($format);
 }
@@ -48,3 +48,28 @@ function get_ip() {
     }  
     return $ip;
 } 
+
+function role_name($short)
+{
+    if ($short === "A") {
+        return "Admin";
+    }
+    if ($short === "M") {
+        return "Manager";
+    }
+    if ($short === "D") {
+        return "Data Entry";
+    }
+    return "";
+}
+
+function status_name($short)
+{
+    if ($short === "A") {
+        return "Active";
+    }
+    if ($short === "U") {
+        return "Inactive";
+    }
+    return "";
+}

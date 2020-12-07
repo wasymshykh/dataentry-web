@@ -1,13 +1,13 @@
 <div class="row">
-    <div class="col-3">
+    <div class="col-auto border-right">
         <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-            <a class="nav-link <?=empty($errors) && !$success ? 'active' : ''?>" id="v-pills-manage-tab" data-toggle="pill" href="#v-pills-manage" role="tab" aria-controls="v-pills-manage" aria-selected="true">Manage Users</a>
-            <a class="nav-link <?=!empty($errors) || $success ? 'active' : ''?>" id="v-pills-add-tab" data-toggle="pill" href="#v-pills-add" role="tab" aria-controls="v-pills-add" aria-selected="false">Add User</a>
-            <a class="nav-link" id="v-pills-logs-tab" data-toggle="pill" href="#v-pills-logs" role="tab" aria-controls="v-pills-logs" aria-selected="false">View Logs</a>
+            <a class="nav-link <?=empty($errors) && !$success ? 'active' : ''?>" id="v-pills-manage-tab" data-toggle="pill" href="#v-pills-manage" role="tab" aria-controls="v-pills-manage" aria-selected="true"><i class="fa fa-users mr-2"></i> Manage Users</a>
+            <a class="nav-link <?=!empty($errors) || $success ? 'active' : ''?>" id="v-pills-add-tab" data-toggle="pill" href="#v-pills-add" role="tab" aria-controls="v-pills-add" aria-selected="false"><i class="fa fa-user mr-2"></i> Add User</a>
+            <a class="nav-link" id="v-pills-logs-tab" data-toggle="pill" href="#v-pills-logs" role="tab" aria-controls="v-pills-logs" aria-selected="false"><i class="fa fa-server mr-2"></i> View Logs</a>
         </div>
     </div>
 
-    <div class="col-9">
+    <div class="col">
         <div class="tab-content" id="v-pills-tabContent">
             <div class="tab-pane fade <?=empty($errors) && !$success ? 'show active' : ''?>" id="v-pills-manage" role="tabpanel" aria-labelledby="v-pills-manage-tab">
                 <div class="row">
@@ -20,6 +20,22 @@
                     </div>
 
                     <div class="col-12">
+
+                            <?php if(!empty($main_errors)): ?>
+                                <div class="alert alert-danger">
+                                    <dl class="mb-0">
+                                        <dt>Error!</dt>
+                                    <?php foreach($main_errors as $error): ?>
+                                        <dd><?=$error?></dd>            
+                                    <?php endforeach; ?>
+                                    </dl>
+                                </div>
+                            <?php endif; ?>
+                            <?php if($main_success): ?>
+                                <div class="alert alert-success">
+                                    <?=$main_success?>
+                                </div>
+                            <?php endif; ?>
 
                         <table id="usersTable" class="table table-striped table-bordered" style="width:100%">
                             <thead>
@@ -37,12 +53,17 @@
                                 <tr>
                                     <td><?= $user['user_id'] ?></td>
                                     <td><?= $user['user_username'] ?></td>
-                                    <td><?= ($user['user_role'] === 'A' ? 'Admin' : ($user['user_role'] === 'M' ? 'Manager' : ($user['user_role'] === 'N' ? 'Normal' : 'undefined'))) ?></td>
+                                    <td><?= ($user['user_role'] === 'A' ? 'Admin' : ($user['user_role'] === 'M' ? 'Manager' : ($user['user_role'] === 'D' ? 'Data Entry' : 'undefined'))) ?></td>
                                     <td><?= ($user['user_status'] === 'A' ? '<span class="badge badge-success">Active</span>' : ($user['user_status'] === 'U' ? '<span class="badge badge-warning">Inactive</span>' : 'undefined')) ?></td>
                                     <td><?= normal_date($user['user_created']) ?></td>
                                     <td>
-                                        <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editUser" data-userid="<?= $user['user_id'] ?>" data-username="<?= $user['user_username'] ?>" data-status="<?= $user['user_status'] ?>" data-type="<?= $user['user_type'] ?>">Edit</button>
-
+                                        <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editUser" data-userid="<?=$user['user_id'] ?>" data-username="<?=$user['user_username'] ?>" data-status="<?= $user['user_status'] ?>" data-type="<?=$user['user_role'] ?>">Edit</button>
+                                        <?php if ($user['user_id'] !== SUPER_ADMIN_ID): ?>
+                                        <form class="my-0 d-inline" action="" method="post">
+                                            <input type="hidden" name="delete" value="<?=$user['user_id']?>">
+                                            <button type="submit" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
+                                        </form>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>
@@ -100,7 +121,7 @@
                                         <select name="type" id="type" class="form-control">
                                             <option value="A" <?=!empty($_POST['type']) && $_POST['type'] === 'A' ? 'selected':''?>>Admin</option>
                                             <option value="M" <?=!empty($_POST['type']) && $_POST['type'] === 'M' ? 'selected':''?>>Manager</option>
-                                            <option value="N" <?=!empty($_POST['type']) && $_POST['type'] === 'N' ? 'selected':''?>>Normal</option>
+                                            <option value="D" <?=!empty($_POST['type']) && $_POST['type'] === 'D' ? 'selected':''?>>Date Entry</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
@@ -136,13 +157,14 @@
                     </div>
                 </div>
 
-                <div class="col-lg-8 offset-lg-2 mb-4 mt-2">
+                <div class="col-lg-10 offset-lg-1 mb-4 mt-2">
                     
                     <div class="card">
                         <div class="card-body">
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
+                                        <th>Date</th>
                                         <th>Log type</th>
                                         <th>Log message</th>
                                     </tr>
@@ -150,6 +172,7 @@
                                 <tbody>
                                     <?php foreach ($site_logs as $site_log): ?>
                                         <tr>
+                                            <td><div class="badge badge-secondary"><?=normal_date($site_log['sitelog_created'])?></div></td>
                                             <td><?=$site_log['sitelog_type']?></td>
                                             <td><?=$site_log['sitelog_text']?></td>
                                         </tr>
@@ -168,7 +191,7 @@
 
 <div class="modal fade" id="editUser" tabindex="-1" aria-labelledby="editUserLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <form class="modal-content" method="POST" action="<?= $_SERVER['PHP_SELF'] ?>">
             <div class="modal-header">
                 <h5 class="modal-title" id="editUserLabel">Edit User</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -176,40 +199,38 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form method="POST" action="<?= $_SERVER['PHP_SELF'] ?>">
-                    <input type="hidden" name="edit">
-                    <input type="hidden" name="user_id" id="user-id-input">
-                    <div class="form-group">
-                        <label for="e_username" class="col-form-label">Username:</label>
-                        <input type="text" class="form-control" name="username" id="e_username">
-                    </div>
-                    <div class="form-group">
-                        <label for="e_password" class="col-form-label">Password:</label>
-                        <input type="password" class="form-control" name="password" id="e_password">
-                        <small class="form-text text-muted">Leave empty if you don't want to change</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="e_type" class="col-form-label">Type:</label>
-                        <select name="type" id="e_type" class="form-control">
-                            <option value="M">Manager</option>
-                            <option value="A">Admin</option>
-                            <option value="N">Normal</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="e_status" class="col-form-label">Type:</label>
-                        <select name="status" id="e_status" class="form-control">
-                            <option value="A">Active</option>
-                            <option value="U">Inactive</option>
-                        </select>
-                    </div>
-                </form>
+                <input type="hidden" name="edit">
+                <input type="hidden" name="user_id" id="user-id-input">
+                <div class="form-group">
+                    <label for="e_username" class="col-form-label">Username:</label>
+                    <input type="text" class="form-control" name="username" id="e_username">
+                </div>
+                <div class="form-group">
+                    <label for="e_password" class="col-form-label">Password:</label>
+                    <input type="password" class="form-control" name="password" id="e_password">
+                    <small class="form-text text-muted">Leave empty if you don't want to change</small>
+                </div>
+                <div class="form-group">
+                    <label for="e_type" class="col-form-label">Type:</label>
+                    <select name="type" id="e_type" class="form-control">
+                        <option value="A">Admin</option>
+                        <option value="M">Manager</option>
+                        <option value="D">Data Entry</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="e_status" class="col-form-label">Status:</label>
+                    <select name="status" id="e_status" class="form-control">
+                        <option value="A">Active</option>
+                        <option value="U">Inactive</option>
+                    </select>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="submit" class="btn btn-primary">Update</button>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 
@@ -233,8 +254,8 @@
             modal.find('.modal-body #user-id-input').val(user_id);
             modal.find('.modal-body #e_username').val(user_username);
 
-            modal.find('.model-body #e_type').val(user_type);
-            modal.find('.model-body #e_status').val(user_status)
+            modal.find('#e_type').val(user_type);
+            modal.find('#e_status').val(user_status);
         });
 
     });
