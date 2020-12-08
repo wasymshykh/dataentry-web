@@ -38,7 +38,7 @@
                             <?php endif; ?>
 
                         <table id="usersTable" class="table table-striped table-bordered" style="width:100%">
-                            <thead>
+                            <thead class="thead-dark">
                                 <tr>
                                     <th>ID</th>
                                     <th>Username</th>

@@ -31,9 +31,8 @@ $fund_admins = ['1' => 'Anas', '2' => 'Brandon'];
 $nhis_hospitals = ['1' => 'Korangi Hospital', '2' => 'Malir Hospital'];
 
 if (isset($_POST) && !empty($_POST)) {
-
     $staff = new Staff($db);
-    
+
     $result = $staff->handle_create($_POST, $logged['user_id']);
 
     if ($result['status']) {

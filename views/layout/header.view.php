@@ -6,6 +6,7 @@
     <title><?=$settings->fetch('site_title')?></title>
 
     <link rel="stylesheet" href="<?=URL?>/static/css/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="<?=URL?>/static/css/style.css">
 
     <script src="<?=URL?>/static/js/jquery-3.5.1.min.js"></script>
 
@@ -20,7 +21,7 @@
 
     <div class="container-fluid p-4">
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <a class="navbar-brand" href="<?=URL?>">
+            <a class="navbar-brand" href="<?=URL?><?=$logged ? '/panel' : ''?>">
                 <img src="<?=URL?>/static/images/logo-icon.png" width="30" height="30" class="d-inline-block align-top" alt="<?=$settings->fetch('site_title')?>" loading="lazy">
                 Data<b>Entry</b>
             </a>
@@ -34,6 +35,7 @@
                     <?php if ($logged): ?>
                         <li class="nav-item"><a href="<?=URL?>/panel/manage_users" class="nav-link"><i class="fa fa-users"></i> Users</a></li>
                         <li class="nav-item"><a href="<?=URL?>/panel/mda" class="nav-link"><i class="fa fa-building"></i> MDA</a></li>
+                        <li class="nav-item"><a href="<?=URL?>/panel/staff" class="nav-link"><i class="fa fa-black-tie"></i> Staff</a></li>
                         <li class="nav-item"><a href="<?=URL?>/panel/create_staff" class="nav-link"><i class="fa fa-plus"></i> Add Entry</a></li>
                     <?php else: ?>
                         <li class="nav-item"><a class="nav-link" href="<?=URL?>">Home <span class="sr-only">(current)</span></a></li>

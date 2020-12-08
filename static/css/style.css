@@ -1,0 +1,10 @@
+b, strong {
+    font-weight: 700;
+}
+
+.passportimg {
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    max-height: 90px;
+}

@@ -13,7 +13,7 @@
     </div>
 <?php endif; ?>
 
-<form action="" method="POST" class="row" style="margin-bottom: 5em;">
+<form action="" method="POST" enctype="multipart/form-data" class="row" style="margin-bottom: 5em;">
     <div class="col-xl-4 col-lg-4 col-md-6">
         <div class="card">
             <div class="card-header">Bio</div>
@@ -473,8 +473,13 @@
                 </div>
                 
                 <div class="pb-3">
-                    <label for="formFile" class="form-label">Insert Passport</label>
-                    <input class="form-control" type="file" id="formFile" accept="image/*">
+                    <div>
+                        <label for="passport-image">
+                            <img src="<?=URL?>/static/images/no_picture.jpg" alt="picture" class="passportimg" id="picture">
+                        </label>
+                    </div>
+                    <label for="passport-image" class="form-label">Insert Passport</label>
+                    <input class="form-control" type="file" id="passport-image" name="passport-image" accept="image/*" onchange="loadFile(event)">
                 </div>
 
             </div>
@@ -491,3 +496,12 @@
     </div>
 </div>
 
+<script>
+    const loadFile = function(event) {
+        let output = document.getElementById('picture');
+        output.src = URL.createObjectURL(event.target.files[0]);
+        output.onload = function() {
+            URL.revokeObjectURL(output.src)
+        }
+    };
+</script>
