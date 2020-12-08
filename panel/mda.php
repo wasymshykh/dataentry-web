@@ -93,12 +93,8 @@ if (isset($_POST) && !empty($_POST)) {
 
 }
 
-
 $departments = $mda->get_all();
-
-
 
 include_once LAYOUT_DIR.'header.view.php';
 include_once PAGE_DIR.'panel/mda.view.php';
 include_once LAYOUT_DIR.'footer.view.php';
-
