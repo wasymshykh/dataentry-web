@@ -1,5 +1,5 @@
 <div class="border-bottom pt-2 pb-2 mb-2">
-    <h3 class="text-center font-weight-light"><?=$page_title?></h3>
+    <h3 class="text-center font-weight-light">Retiring <b>Staff</b></h3>
 </div>
 
 <?php if ($success) : ?>
@@ -44,6 +44,7 @@
                     <td>
                         <a href="<?=URL?>/panel/edit_staff?s=<?=$people['staff_id']?>" class="btn btn-sm btn-primary"><i class="fa fa-pencil mr-1"></i> Edit</a>
                         <a href="<?=URL?>/panel/view_staff?s=<?=$people['staff_id']?>" class="btn btn-sm btn-success">View <i class="fa fa-arrow-right ml-1"></i></a>
+                        <a href="<?=URL?>/panel/retire?s=<?=$people['staff_id']?>" class="btn btn-sm btn-danger"><i class="fa fa-arrow-right mr-1"></i> Mark Retired</a>
                     </td>
                 </tr>
                 <?php endforeach; ?>

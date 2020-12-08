@@ -85,10 +85,61 @@ class Staff
         
         return ['code' => 1, 'message' => 'no image uploaded'];
     }
+
+    public function get_all_retiring()
+    {
+        $staff = $this->get_all_staff();
+        $retiring = [];
+        foreach ($staff as $person) {
+            // check for birthday
+            if ($person['staff_dob']) {
+                $birthday = $this->getAge($person['staff_dob'], current_date());
+                if ($birthday['years'] > 59 || ($birthday['years'] === 59 && $birthday['months'] >= 9)) {
+                    array_push($retiring, $person);
+                    $retiring[count($retiring)-1]['retirement_type'] = "Age limit, staff is " . $birthday['years'] . ' years ' . $birthday['months'] .' months old';
+                    continue;
+                }
+            }
+
+            if ($person['staff_confirmation']) {
+                $timepassed = $this->getAge($person['staff_confirmation'], current_date());
+                if ($timepassed['years'] > 35 || ($timepassed['years'] === 34 && $timepassed['months'] >= 9)) {
+                    array_push($retiring, $person);
+                    $retiring[count($retiring)-1]['retirement_type'] = "Working limit, staff is working for " . $birthday['years'] . ' years ' . $birthday['months'] .' months';
+                    continue;
+                }
+            }
+        }
+        
+        return $retiring;
+    }
+
+    public function mark_retired($staff_id)
+    {
+        $s = $this->db->prepare("UPDATE `staff` SET `staff_status` = 'R', `staff_retired_on` = :dt WHERE `staff_id` = :i");
+        $s->bindParam(":i", $staff_id);
+        $datetime = current_date();
+        $s->bindParam(":dt", $datetime);
+
+        if ($s->execute()) {
+            return true;
+        }
+        return false;
+    }
+
+    public function getAge($dob,$condate) { 
+        $birthdate = new DateTime(date("Y-m-d",  strtotime(implode('-', array_reverse(explode('/', $dob))))));
+        $today= new DateTime(date("Y-m-d",  strtotime(implode('-', array_reverse(explode('/', $condate))))));
+
+        $diff = $birthdate->diff($today);
+        $age = ['years' => $diff->y, 'months' => $diff->m, 'days' => $diff->d];
+        
+        return $age;
+    }
     
     public function get_all_staff()
     {
-        $q = "SELECT * FROM `staff` JOIN `mda` ON `staff_mda_id` = `mda_id`";
+        $q = "SELECT * FROM `staff` JOIN `mda` ON `staff_mda_id` = `mda_id` WHERE `staff_status` = 'A'";
         $s = $this->db->prepare($q);
         if ($s->execute()) {
             return $s->fetchAll();
@@ -105,6 +156,17 @@ class Staff
             return $s->fetchAll();
         }
         return [];
+    }
+
+    public function get_staff_by($col, $val)
+    {
+        $q = "SELECT * FROM `staff` JOIN `mda` ON `staff_mda_id` = `mda_id` WHERE `$col` = :v";
+        $s = $this->db->prepare($q);
+        $s->bindParam(":v", $val);
+        if ($s->execute()) {
+            return $s->fetch();
+        }
+        return false;
     }
 
     private function _r($status, $message = "")

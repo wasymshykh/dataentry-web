@@ -187,7 +187,6 @@ if (isset($_POST) && !empty($_POST)) {
 
 $site_logs = $u->get_site_logs();
 
-
 $datatable = true;
 include_once LAYOUT_DIR.'header.view.php';
 include_once PAGE_DIR.'panel/manage_users.view.php';
