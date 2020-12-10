@@ -18,6 +18,7 @@ if (isset($_SESSION['status']) && !empty($_SESSION['status'])) {
 }
 
 $mda = new Mda($db);
+$staff = new Staff($db);
 
 if (isset($_POST) && !empty($_POST)) {
 

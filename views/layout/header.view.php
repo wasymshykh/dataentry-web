@@ -33,10 +33,16 @@
             <div class="collapse navbar-collapse" id="main-nav">
                 <ul class="navbar-nav">
                     <?php if ($logged): ?>
-                        <li class="nav-item"><a href="<?=URL?>/panel/manage_users" class="nav-link"><i class="fa fa-users"></i> Users</a></li>
-                        <li class="nav-item"><a href="<?=URL?>/panel/mda" class="nav-link"><i class="fa fa-building"></i> MDA</a></li>
-                        <li class="nav-item"><a href="<?=URL?>/panel/staff" class="nav-link"><i class="fa fa-black-tie"></i> Staff</a></li>
-                        <li class="nav-item"><a href="<?=URL?>/panel/create_staff" class="nav-link"><i class="fa fa-plus"></i> Add Entry</a></li>
+                        <?php if ($logged['user_role'] === 'A' || $logged['user_role'] === 'M'): ?>
+                            <?php if($logged['user_role'] !== 'M'): ?>
+                            <li class="nav-item"><a href="<?=URL?>/panel/manage_users" class="nav-link"><i class="fa fa-users"></i> Users</a></li>
+                            <?php endif; ?>
+                            <li class="nav-item"><a href="<?=URL?>/panel/mda" class="nav-link"><i class="fa fa-building"></i> <?=$logged['user_role'] === 'M' ? 'View' :''?> MDA</a></li>
+                            <li class="nav-item"><a href="<?=URL?>/panel/staff" class="nav-link"><i class="fa fa-black-tie"></i> Staff</a></li>
+                        <?php endif; ?>
+                        <?php if ($logged['user_role'] !== 'M'): ?>
+                            <li class="nav-item"><a href="<?=URL?>/panel/create_staff" class="nav-link"><i class="fa fa-plus"></i> Add Entry</a></li>
+                        <?php endif; ?>
                     <?php else: ?>
                         <li class="nav-item"><a class="nav-link" href="<?=URL?>">Home <span class="sr-only">(current)</span></a></li>
                     <?php endif; ?>

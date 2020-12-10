@@ -13,6 +13,7 @@
     </div>
 <?php endif; ?>
 <div class="row">
+    <?php if($logged['user_role'] === 'A'): ?>
     <div class="col-lg-4">
         <div class="card">
             <div class="card-header"><i class="fa fa-plus"></i> Add MDA</div>
@@ -36,7 +37,8 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-8">
+    <?php endif; ?>
+    <div class="<?=$logged['user_role'] === 'A' ? 'col-lg-8':'col-lg-12'?>">
 
         <table class="table table-bordered mt-4">
             <thead class="thead-dark">
@@ -54,13 +56,14 @@
                     <td><input class="rMda-radio" type="radio" name="Mda-action" value="<?=$department['mda_id']?>"></td>
                     <td><?=$department['mda_name']?></td>
                     <td><small><?=normal_date($department['mda_created'])?></small></td>
-                    <td>-</td>
+                    <td><?=count($staff->get_all_staff_by('staff_mda_id', $department['mda_id']))?></td>
                     <td>
                         <a href="<?=URL?>/panel/staff?d=<?=$department['mda_id']?>" class="btn btn-sm btn-primary">View Staff <i class="fa fa-arrow-right ml-2"></i></a>
                     </td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
+            <?php if($logged['user_role'] === 'A'): ?>
             <tfoot>
                 <tr>
                     <td colspan="5">
@@ -69,12 +72,14 @@
                     </td>
                 </tr>
             </tfoot>
+            <?php endif; ?>
         </table>
 
     </div>
 </div>
 
 
+<?php if($logged['user_role'] === 'A'): ?>
 <div class="modal fade" id="renameMda" tabindex="-1" role="dialog" aria-labelledby="renameMdaCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <form method="post" action="" class="modal-content">
@@ -125,7 +130,6 @@
 
 
 <script>
-
     $("#renameMdaBtn").on('click', (e) => {
         _checked = $(".rMda-radio:checked");
         if (_checked.length > 0) {
@@ -150,3 +154,4 @@
         }
     })
 </script>
+<?php endif; ?>
