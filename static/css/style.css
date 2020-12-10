@@ -8,3 +8,11 @@ b, strong {
     height: auto;
     max-height: 90px;
 }
+
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    background-color: #343a40;
+}
+
+.nav-pills .nav-link {
+    color: #343a40;
+}

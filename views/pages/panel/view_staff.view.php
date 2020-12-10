@@ -22,7 +22,7 @@
                     <?php if ($staff['staff_passport']): ?>
                         <a href="<?=URL?>/static/images/uploads/<?=$staff['staff_passport']?>" target="_blank" class="btn btn-sm btn-success"><i class="fa fa-address-book mr-2"></i> View Passport</a>
                     <?php endif; ?>
-                    <a href="<?=URL?>/panel/edit_staff?=<?=$staff['staff_id']?>" class="btn btn-sm btn-primary"><i class="fa fa-pencil mr-2"></i> Edit Staff</a>
+                    <a href="<?=URL?>/panel/edit_staff?s=<?=$staff['staff_id']?>" class="btn btn-sm btn-primary"><i class="fa fa-pencil mr-2"></i> Edit Staff</a>
                 </div>
             </div>
 
@@ -36,7 +36,7 @@
             <div class="col-6 mb-4">
                 <div class="border text-center pt-2">
                     <h6 class="bg-dark d-table mx-auto mb-2 py-2 px-2 text-light" style="font-size: 1.4em;"><i class="fa fa-calendar"></i></h6>
-                    <h5 class="mb-0"><?=$staff['staff_mda_posted'] ? normal_date($staff['staff_mda_posted']) : '' ?></h5>
+                    <h5 class="mb-0"><?=$staff['staff_mda_posted'] ? normal_date($staff['staff_mda_posted'], 'M d, Y') : '' ?></h5>
                     <p class="text-muted font-weight-light"><small>Date Posted</small></p>
                 </div>
             </div>

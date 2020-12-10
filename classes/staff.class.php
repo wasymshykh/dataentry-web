@@ -56,10 +56,65 @@ class Staff
         return $this->_r(false, "Unable to create the record.");
     }
 
+
+    public function handle_edit($data, $staff, $user_id)
+    {
+        $filtered = [];
+        $changes = "";
+        foreach ($data as $field => $value) {
+            $filtered[$field] = normal_text($value);
+        }
+        if (empty($filtered['fname'])) {
+            return $this->_r(false, "Please enter name of the staff");
+        }
+        $field_set = $this->get_field_db_mapping();
+        $field_name_set = $this->get_column_name_mapping();
+        $qs = "";
+        $c = 0;
+        foreach ($field_set as $field => $column) {
+            if (!(empty($filtered[$field]) && $staff['staff_'.$column] === NULL)) {
+                if ($filtered[$field] !== $staff['staff_'.$column]) {
+                    $changes .= $field_name_set[$column] . ", ";
+                }
+            }
+            if ($c > 0) {
+                $qs .= ", ";
+            }
+            $qs .= "`staff_$column` = " . ($filtered[$field] ? "'". $filtered[$field] ."'" : "NULL");
+            $c += 1;
+        }
+
+        // passport image
+        $image_status = $this->create_file();
+        if ($image_status['code'] === 2) {
+            return $this->_r(false, $image_status['message']);
+        }
+        if ($image_status['code'] === 3) {
+            $qs .= ", `staff_passport` = '".$image_status['message']."'";
+        }
+        if ($image_status['code'] !== 1) {
+            $changes .= " passport picture";
+        }
+
+        if ($changes !== "") {
+            $q = "UPDATE `staff` SET $qs WHERE `staff_id` = :si";
+            $s = $this->db->prepare($q);
+    
+            $s->bindParam(":si", $staff['staff_id']);
+    
+            if ($s->execute()) {
+                return $this->_r(true, "Record is successfully updated!, You have changed: " . $changes);
+            }
+            return $this->_r(false, "Unable to update the record.");
+        }
+
+        return $this->_r(true, "You didn't changed anything!");
+    }
+
     public function create_file ()
     {
         // if passport image is uploaded
-        if (isset($_FILES) && isset($_FILES['passport-image'])) {
+        if (isset($_FILES) && isset($_FILES['passport-image']) && !empty($_FILES['passport-image']['size'])) {
             $check = getimagesize($_FILES["passport-image"]["tmp_name"]);
             if($check !== false) {
             
@@ -114,9 +169,70 @@ class Staff
         return $retiring;
     }
 
+    public function get_all_posting()
+    {
+        $staff = $this->get_all_staff();
+        $posting = [];
+        foreach ($staff as $person) {
+            if ($person['staff_mda_posted']) {
+                $timepassed = $this->getAge($person['staff_mda_posted'], current_date());
+                if ($timepassed['years'] > 1 || ($timepassed['years'] === 1 && $timepassed['months'] >= 0)) {
+                    array_push($posting, $person);
+                    $posting[count($posting)-1]['retirement_type'] = "Same MDA for " . $timepassed['years'] . ' years ' . $timepassed['months'] .' months.';
+                    continue;
+                }
+            }
+        }
+        
+        return $posting;
+    }
+
+    public function get_all_promotion()
+    {
+        $staff = $this->get_all_staff();
+        $promotion = [];
+        foreach ($staff as $person) {
+            if ($person['staff_grade']) {
+                $timepassed = $this->getAge($person['staff_last_promotion'], current_date());
+                
+                $years_needed = 1000;
+                if ($person['staff_grade'] >= 1 && $person['staff_grade'] <= 7) {
+                    $years_needed = 2;
+                } else
+                if ($person['staff_grade'] >= 8 && $person['staff_grade'] <= 14) {
+                    $years_needed = 3;
+                } else
+                if ($person['staff_grade'] >= 15 && $person['staff_grade'] < 17) {
+                    $years_needed = 4;
+                }
+
+                if ($timepassed['years'] > $years_needed || ($timepassed['years'] === $years_needed && $timepassed['months'] >= 0)) {
+                    array_push($promotion, $person);
+                    $promotion[count($promotion)-1]['retirement_type'] = "Same level for " . $timepassed['years'] . ' years ' . $timepassed['months'] .' months.';
+                    continue;
+                }
+            }
+        }
+        
+        return $promotion;
+    }
+
     public function mark_retired($staff_id)
     {
         $s = $this->db->prepare("UPDATE `staff` SET `staff_status` = 'R', `staff_retired_on` = :dt WHERE `staff_id` = :i");
+        $s->bindParam(":i", $staff_id);
+        $datetime = current_date();
+        $s->bindParam(":dt", $datetime);
+
+        if ($s->execute()) {
+            return true;
+        }
+        return false;
+    }
+    public function mark_promote($new_level, $staff_id)
+    {
+        $s = $this->db->prepare("UPDATE `staff` SET `staff_grade` = :g, `staff_last_promotion` = :dt WHERE `staff_id` = :i");
+        $s->bindParam(":g", $new_level);
         $s->bindParam(":i", $staff_id);
         $datetime = current_date();
         $s->bindParam(":dt", $datetime);

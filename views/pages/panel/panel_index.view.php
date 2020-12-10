@@ -19,6 +19,15 @@
             </div>
             <div class="col-lg-4 p-4">
                 <div class="border text-center pt-4">
+                    <h6 class="bg-dark d-table mx-auto mb-2 py-2 px-3 text-light" style="font-size: 1.8em;"><i class="fa fa-building"></i></h6>
+                    <h4 class="mb-0"><?=count($mdas)?></h4>
+                    <p class="text-muted font-weight-light">MDAs</p>
+                    
+                    <a href="<?=URL?>/panel/mda" class="btn btn-dark btn-sm mb-3">Manage <i class="fa fa-arrow-right ml-2"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-4 p-4">
+                <div class="border text-center pt-4">
                     <h6 class="bg-dark d-table mx-auto mb-2 py-2 px-3 text-light" style="font-size: 1.8em;"><i class="fa fa-black-tie"></i></h6>
                     <h4 class="mb-0"><?=count($staff)?></h4>
                     <p class="text-muted font-weight-light">Staff Registered</p>
@@ -28,11 +37,31 @@
             </div>
             <div class="col-lg-4 p-4">
                 <div class="border text-center pt-4">
-                    <h6 class="bg-dark d-table mx-auto mb-2 py-2 px-3 text-light" style="font-size: 1.8em;"><i class="fa fa-black-tie"></i></h6>
+                    <h6 class="bg-dark d-table mx-auto mb-2 py-2 px-3 text-light" style="font-size: 1.8em;"><i class="fa fa-podcast"></i></h6>
                     <h4 class="mb-0"><?=count($retiring)?></h4>
                     <p class="text-muted font-weight-light">Retiring Users</p>
                     
                     <a href="<?=URL?>/panel/retirement" class="btn btn-dark btn-sm mb-3">Update <i class="fa fa-arrow-right ml-2"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-4 p-4">
+                <div class="border text-center pt-4">
+                    <h6 class="bg-dark d-table mx-auto mb-2 py-2 px-3 text-light" style="font-size: 1.8em;"><i class="fa fa-plane"></i></h6>
+                    <h4 class="mb-0"><?=count($posting)?></h4>
+                    <p class="text-muted font-weight-light">Posting Due</p>
+
+                    <a href="<?=URL?>/panel/posting" class="btn btn-dark btn-sm mb-3">Update <i class="fa fa-arrow-right ml-2"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-4 p-4">
+                <div class="border text-center pt-4">
+                    <h6 class="bg-dark d-table mx-auto mb-2 py-2 px-3 text-light" style="font-size: 1.8em;"><i class="fa fa-level-up"></i></h6>
+                    <h4 class="mb-0"><?=count($promotions)?></h4>
+                    <p class="text-muted font-weight-light">Promotion Due</p>
+                    
+                    <a href="<?=URL?>/panel/promotion" class="btn btn-dark btn-sm mb-3">Update <i class="fa fa-arrow-right ml-2"></i></a>
                 </div>
             </div>
 
