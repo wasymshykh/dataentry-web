@@ -23,7 +23,7 @@
     define('DB_HOST', 'localhost');
     define('DB_NAME', 'dataentry');
     define('DB_USER', 'root');
-    define('DB_PASS', 'root');
+    define('DB_PASS', '');
 
     // Timezone setting
     define('TIMEZONE', 'Asia/Karachi');

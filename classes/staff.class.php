@@ -113,6 +113,22 @@ class Staff
 
     public function create_file ()
     {
+
+        // if snap image is uploaded
+
+        if (isset($_POST['snapfile']) && !empty($_POST['snapfile'])) {
+            $file_name = time() . '.png';
+            $target_file = DIR . "static/images/uploads/" . $file_name;
+            $r = file_put_contents($target_file, base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $_POST['snapfile'])));
+
+            if ($r) {
+                return ['code' => 3, 'message' => $file_name];
+            } else {
+                return ['code' => 2, 'message' => 'Sorry could not upload the image'];
+            }
+
+        } else
+
         // if passport image is uploaded
         if (isset($_FILES) && isset($_FILES['passport-image']) && !empty($_FILES['passport-image']['size'])) {
             $check = getimagesize($_FILES["passport-image"]["tmp_name"]);

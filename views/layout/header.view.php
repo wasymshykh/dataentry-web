@@ -23,7 +23,7 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <a class="navbar-brand" href="<?=URL?><?=$logged ? '/panel' : ''?>">
                 <img src="<?=URL?>/static/images/logo-icon.png" width="30" height="30" class="d-inline-block align-top" alt="<?=$settings->fetch('site_title')?>" loading="lazy">
-                Data<b>Entry</b>
+                <b>Data Entry</b> System
             </a>
 
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-nav" aria-controls="main-nav" aria-expanded="false" aria-label="Toggle navigation">

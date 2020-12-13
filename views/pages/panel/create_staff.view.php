@@ -473,13 +473,23 @@
                 </div>
                 
                 <div class="pb-3">
+                    <label for="e" class="form-label">Insert Passport</label>
                     <div>
                         <label for="passport-image">
                             <img src="<?=URL?>/static/images/no_picture.jpg" alt="picture" class="passportimg" id="picture">
                         </label>
                     </div>
-                    <label for="passport-image" class="form-label">Insert Passport</label>
-                    <input class="form-control" type="file" id="passport-image" name="passport-image" accept="image/*" onchange="loadFile(event)">
+                    <div class="row align-items-end">
+                        <div class="col">
+                            <label for="passport-image"><small class="badge">Upload photo</small></label>
+                            <input class="form-control" type="file" id="passport-image" name="passport-image" accept="image/*" onchange="loadFile(event)">
+                            <input type="hidden" name="snapfile" id="snapfile" value="">
+                        </div>
+                        <div class="col-auto border-right border-left">OR</div>
+                        <div class="col">
+                            <button type="button" class="btn btn-danger" id="takePhotoBtn"><i class="fa fa-camera"></i> Take photo</button>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -494,9 +504,88 @@
             </div>
         </div>
     </div>
+
+</form>
+
+
+<div class="modal fade" id="takePhoto" tabindex="-1" aria-labelledby="takePhotoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="takePhotoLabel">Take a photo</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <img src="" class="d-none mb-2" id="preview" alt="Preview" style="width:460px;height:460px;">
+                        <video id="webcam" autoplay playsinline width="460" height="460"></video>
+                        <canvas id="canvas" class="d-none"></canvas>
+                    </div>
+                    <div class="col-12 text-center">
+                        <button type="button" class="btn btn-sm btn-success" id="snap"><i class="fa fa-camera"></i> Snap</button>
+                        <button type="button" class="btn btn-sm btn-danger d-none" id="takeagain"><i class="fa fa-repeat"></i> take again</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
 
+
+
+<script type="text/javascript" src="https://unpkg.com/webcam-easy/dist/webcam-easy.min.js"></script>
+
 <script>
+
+    const takephotobtn = document.getElementById('takePhotoBtn');
+
+    const webcamElement = document.getElementById('webcam');
+    const canvasElement = document.getElementById('canvas');
+    const webcam = new Webcam(webcamElement, 'user', canvasElement, null);
+
+    takephotobtn.addEventListener('click', (e) => {
+        webcam.start()
+        .then(result =>{
+            console.log("webcam started.");
+            $('#takePhoto').modal('show');
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    })
+
+    $('#takePhoto').on('hide.bs.modal', (e) => {
+        webcam.stop();
+    })
+
+
+    $('#snap').on('click', (e) => {
+        var picture = webcam.snap();
+        document.querySelector('#picture').src = picture;
+        document.querySelector('#preview').src = picture;
+        
+        $('#snapfile').val(picture);
+
+        $(webcamElement).addClass('d-none');
+        $('#preview').removeClass('d-none');
+        $('#snap').addClass('d-none');
+        $('#takeagain').removeClass('d-none');
+    })
+
+    $('#takeagain').on('click', (e)=> {
+        $(webcamElement).removeClass('d-none');
+        $('#preview').addClass('d-none');
+        $('#snap').removeClass('d-none');
+        $('#takeagain').addClass('d-none');
+    })
+    
+
     const loadFile = function(event) {
         let output = document.getElementById('picture');
         output.src = URL.createObjectURL(event.target.files[0]);
