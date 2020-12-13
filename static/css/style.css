@@ -1,18 +1,63 @@
-b, strong {
-    font-weight: 700;
+b,
+strong {
+  font-weight: 700;
 }
 
 .passportimg {
-    max-width: 100%;
-    width: auto;
-    height: auto;
-    max-height: 90px;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  max-height: 90px;
 }
 
-.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
-    background-color: #343a40;
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+  background-color: #343a40;
 }
 
 .nav-pills .nav-link {
-    color: #343a40;
+  color: #343a40;
+}
+
+.simple-tags {
+    width: 100%;
+  border: 1px solid #ced4da;
+  box-sizing: border-box;
+  padding: 0em 0.5em;
+  display: -webkit-box;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 14px;
+  border-radius: 5px;
+}
+.simple-tags > ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: -webkit-box;
+  display: flex;
+  flex-wrap: wrap;
+}
+.simple-tags ul li {
+  margin: 0.5em 0.2em;
+  padding: 0.5em;
+  color: #495057;
+  background-color: #e9ecef;
+  border-radius: 5px;
+}
+.simple-tags ul li a {
+  margin: 0.5em 0.2em;
+  text-decoration: none;
+  color: inherit;
+}
+.simple-tags input {
+  padding: 0.9em 0.5em;
+  box-sizing: border-box;
+  -webkit-box-flex: 1;
+  flex-grow: 1;
+  border: none;
+  outline: none;
+  font-size: inherit;
+  font-family: inherit;
+  color: inherit;
 }

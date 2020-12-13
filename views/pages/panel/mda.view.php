@@ -54,7 +54,7 @@
                 <?php foreach ($departments as $department): ?>
                 <tr>
                     <td><input class="rMda-radio" type="radio" name="Mda-action" value="<?=$department['mda_id']?>"></td>
-                    <td><?=$department['mda_name']?></td>
+                    <td><?=normal_text_back($department['mda_name'])?></td>
                     <td><small><?=normal_date($department['mda_created'])?></small></td>
                     <td><?=count($staff->get_all_staff_by('staff_mda_id', $department['mda_id']))?></td>
                     <td>

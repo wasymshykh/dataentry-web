@@ -67,7 +67,12 @@ class Users
         $s = $this->db->prepare("INSERT INTO `site_logs` (`sitelog_type`, `sitelog_text`) VALUE (:st, :stx)");
         $s->bindParam(':st', $type);
         $s->bindParam(':stx', $text);
-        $s->execute();
+        return $s->execute();
+    }
+
+    public function clear_logs () {
+        $s = $this->db->prepare("DELETE FROM `site_logs`");
+        return $s->execute();
     }
 
     public function get_site_logs () {

@@ -313,7 +313,12 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <input type="text" class="form-control" name="last-posting" id="last-posting" placeholder="Last Posting" value="<?= $_POST['last-posting'] ?? '' ?>">
+                        <select name="last-posting" id="last-posting" class="form-control">
+                            <option value=""></option>
+                            <?php foreach ($mdas as $key => $value): ?>
+                                <option value="<?=$value['mda_id']?>" <?=(isset($_POST['last-posting']) && $_POST['last-posting']===$value['mda_id'])?'selected':''?>><?=$value['mda_name']?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                 </div>
 
@@ -323,7 +328,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <input type="text" class="form-control" name="duration-mda" id="duration-mda" placeholder="Duraion in MDA" value="<?= $_POST['duration-mda'] ?? '' ?>">
+                        <input type="text" class="form-control disabled" name="duration-mda" id="duration-mda" placeholder="Duration in MDA" value="<?= $_POST['duration-mda'] ?? '' ?>" readonly>
                     </div>
                 </div>
 
@@ -393,12 +398,10 @@
                 </div>
                 
                 <div class="pb-3">
-                    <label for="membership">Membership to professional bodies</label>
+                    <label>Membership to professional bodies</label>
                     <div class="input-group border-bottom pb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
-                        </div>
-                        <input type="text" class="form-control" name="membership" id="membership" placeholder="Membership to professional bodies" value="<?= $_POST['membership'] ?? '' ?>">
+                        <div class="simple-tags" id="membership-fields" data-simple-tags="<?= $_POST['membership'] ?? '' ?>"></div>
+                        <input type="hidden" name="membership" id="membership" value="<?= $_POST['membership'] ?? '' ?>">
                     </div>
                 </div>
                 
@@ -540,8 +543,51 @@
 
 
 <script type="text/javascript" src="https://unpkg.com/webcam-easy/dist/webcam-easy.min.js"></script>
+<script src="<?=URL?>/static/js/script-min.js"></script>
 
 <script>
+
+    function dateDiff(startingDate, endingDate) {
+        var startDate = new Date(new Date(startingDate).toISOString().substr(0, 10));
+        if (!endingDate) {
+            endingDate = new Date().toISOString().substr(0, 10);    // need date in YYYY-MM-DD format
+        }
+        var endDate = new Date(endingDate);
+        if (startDate > endDate) {
+            var swap = startDate;
+            startDate = endDate;
+            endDate = swap;
+        }
+        var startYear = startDate.getFullYear();
+        var february = (startYear % 4 === 0 && startYear % 100 !== 0) || startYear % 400 === 0 ? 29 : 28;
+        var daysInMonth = [31, february, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+        var yearDiff = endDate.getFullYear() - startYear;
+        var monthDiff = endDate.getMonth() - startDate.getMonth();
+        if (monthDiff < 0) {
+            yearDiff--;
+            monthDiff += 12;
+        }
+        var dayDiff = endDate.getDate() - startDate.getDate();
+        if (dayDiff < 0) {
+            if (monthDiff > 0) {
+                monthDiff--;
+            } else {
+                yearDiff--;
+                monthDiff = 11;
+            }
+            dayDiff += daysInMonth[startDate.getMonth()];
+        }
+
+        return yearDiff + ' Years ' + monthDiff + ' Months ' + dayDiff + ' Days';
+    }
+
+    $('#mda-posted').on('change', (e) => {
+        var starts = new Date($('#mda-posted').val());
+        var ends = new Date();
+        var diff = dateDiff(starts, ends);
+        $('#duration-mda').val(diff);
+    })
 
     const takephotobtn = document.getElementById('takePhotoBtn');
 

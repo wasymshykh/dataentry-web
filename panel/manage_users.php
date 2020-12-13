@@ -62,6 +62,7 @@ if (isset($_POST) && !empty($_POST)) {
             $password = password_hash($password, PASSWORD_BCRYPT);
             if($u->create($username, $password, $type, $status)) {
                 $success = "User has been successfully added!";
+                $users = $u->get_users();
             } else {
                 array_push($errors, "Could not create the user");
             }
@@ -181,6 +182,15 @@ if (isset($_POST) && !empty($_POST)) {
             array_push($main_errors, "E.03 - Invalid data submission");
         }
 
+    }
+
+    if (isset($_POST['clear_logs'])) {
+        $s = $u->clear_logs();
+        if ($s) {
+            $main_success = "Logs has been cleared!";
+        } else {
+            array_push($main_errors, "Unable to clear the logs.");
+        }
     }
 
 }

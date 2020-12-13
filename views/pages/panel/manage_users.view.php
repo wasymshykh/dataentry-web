@@ -157,12 +157,23 @@
                     </div>
                 </div>
 
+                <div class="col-lg-10 offset-lg-1 mt-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <form action="" method="post">
+                                <input type="hidden" name="clear_logs">
+                                <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i> Clear Logs</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="col-lg-10 offset-lg-1 mb-4 mt-2">
                     
                     <div class="card">
                         <div class="card-body">
                             <table class="table table-striped">
-                                <thead>
+                                <thead class="thead-dark">
                                     <tr>
                                         <th>Date</th>
                                         <th>Log type</th>
