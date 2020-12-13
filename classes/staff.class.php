@@ -56,6 +56,108 @@ class Staff
         return $this->_r(false, "Unable to create the record.");
     }
 
+    public function get_all_cadre() {
+        return ['A' => 'Admin', 'E' => 'Executive'];
+    }
+
+    public function get_all_grades()
+    {
+        return [
+            '17+' => 'Permanent Secretary', 
+            '17' => 'Director', 
+            '16' => 'Deputy Director', 
+            '15' => 'Assistant Director', 
+            '14' => 'Chief', 
+            '13' => 'Assistant Chief', 
+            '12' => 'Principal', 
+            '11' => 'Senior',
+            '9' => 'Admin G1',
+            '8' => 'Admin Officer'
+        ];
+    }
+
+    public function get_all_origins()
+    {
+        return [
+            'fct' => 'Federal Capital Territory',
+            'ab' => 'Abia',
+            'ad' => 'Adamawa',
+            'ak' => 'Akwa Ibom',
+            'an' => 'Anambra',
+            'ba' => 'Bauchi',
+            'bay' => 'Bayelsa',
+            'be' => 'Benue',
+            'bo' => 'Borno',
+            'cr' => 'Cross River',
+            'de' => 'Delta',
+            'eb' => 'Ebonyi',
+            'ed' => 'Edo',
+            'ek' => 'Ekiti',
+            'en' => 'Enugu',
+            'go' => 'Gombe',
+            'im' => 'Imo',
+            'ji' => 'Jigawa',
+            'ka' => 'Kaduna',
+            'kan' => 'Kano',
+            'kat' => 'Katsina',
+            'ke' => 'Kebbi',
+            'ko' => 'Kogi',
+            'kw' => 'Kwara',
+            'la' => 'Lagos',
+            'na' => 'Nasarawa',
+            'ni' => 'Niger',
+            'og' => 'Ogun',
+            'on' => 'Ondo',
+            'os' => 'Osun',
+            'oy' => 'Oyo',
+            'pl' => 'Plateau',
+            'ri' => 'Rivers',
+            'so' => 'Sokoto',
+            'ta' => 'Taraba',
+            'yo' => 'Yobe',
+            'za' => 'Zamfara',
+        ];
+    }
+
+    public function get_all_banks ()
+    {
+        return [
+            'abp' => 'Access Bank Plc',
+            'cnl' => 'Citibank Nigeria Limited',
+            'cmb' => 'Coronation Merchant Bank',
+            'enp' => 'Ecobank Nigeria Plc',
+            'fbmb' => 'FBNQuest Merchant Bank',
+            'fsmb' => 'FSDH Merchant Bank',
+            'fbp' => 'Fidelity Bank Plc',
+            'fmbl' => 'Finca Microfinance Bank Limited',
+            'fbnl' => 'First Bank of Nigeria Limited',
+            'fcmbl' => 'First City Monument Bank Limited',
+            'gbl' => 'Globus Bank Limited',
+            'gtbp' => 'Guaranty Trust Bank Plc',
+            'jbp' => 'Jaiz Bank Plc',
+            'kbl' => 'Keystone Bank Limited',
+            'kb' => 'Kuda Bank',
+            'mtmb' => 'Mutual Trust Microfinance Bank',
+            'nmb' => 'Nova Merchant Bank',
+            'pbl' => 'Polaris Bank Limited',
+            'prbl' => 'Providus Bank Limited',
+            'rmb' => 'Rand Merchant Bank',
+            'rb' => 'Rubies Bank',
+            'sibp' => 'Stanbic IBTC Bank Plc',
+            'sc' => 'Standard Chartered',
+            'sbp' => 'Sterling Bank Plc',
+            'sbnl' => 'SunTrust Bank Nigeria Limited',
+            'tl' => 'TAJBank Limited',
+            'ttbl' => 'Titan Trust Bank Limited',
+            'ubnp' => 'Union Bank of Nigeria Plc',
+            'ubap' => 'United Bank for Africa Plc',
+            'ubp' => 'Unity Bank Plc',
+            'vfd' => 'VFD MFB',
+            'wbp' => 'Wema Bank Plc',
+            'zbp' => 'Zenith Bank Plc'
+        ];
+    }
+
 
     public function handle_edit($data, $staff, $user_id)
     {
@@ -185,6 +287,32 @@ class Staff
         return $retiring;
     }
 
+    public function post_staff_mda ($old_mda, $new_mda, $staff_id)
+    {
+        $q = "UPDATE `staff` SET `staff_mda_id` = :m, `staff_mda_posted` = :dt, `staff_last_posting` = :o WHERE `staff_id` = :i";
+        $s = $this->db->prepare($q);
+        $s->bindParam(':m', $new_mda);
+        $datetime = current_date();
+        $s->bindParam(':dt', $datetime);
+        $s->bindParam(':o', $old_mda);
+        $s->bindParam(':i', $staff_id);
+        
+        return $s->execute();
+    }
+
+    public function post_staff_mda_approval ($new_mda, $staff_id)
+    {
+        global $logged;
+
+        $q = "UPDATE `staff` SET `staff_mda_next` = :m, `staff_mda_next_by` = :id, `staff_status` = 'AO' WHERE `staff_id` = :i";
+        $s = $this->db->prepare($q);
+        $s->bindParam(':m', $new_mda);
+        $s->bindParam(':id', $logged['user_id']);
+        $s->bindParam(':i', $staff_id);
+        
+        return $s->execute();
+    }
+
     public function get_all_posting()
     {
         $staff = $this->get_all_staff();
@@ -209,23 +337,24 @@ class Staff
         $promotion = [];
         foreach ($staff as $person) {
             if ($person['staff_grade']) {
-                $timepassed = $this->getAge($person['staff_last_promotion'], current_date());
-                
-                $years_needed = 1000;
-                if ($person['staff_grade'] >= 1 && $person['staff_grade'] <= 7) {
-                    $years_needed = 2;
-                } else
-                if ($person['staff_grade'] >= 8 && $person['staff_grade'] <= 14) {
-                    $years_needed = 3;
-                } else
-                if ($person['staff_grade'] >= 15 && $person['staff_grade'] < 17) {
-                    $years_needed = 4;
-                }
-
-                if ($timepassed['years'] > $years_needed || ($timepassed['years'] === $years_needed && $timepassed['months'] >= 0)) {
-                    array_push($promotion, $person);
-                    $promotion[count($promotion)-1]['retirement_type'] = "Same level for " . $timepassed['years'] . ' years ' . $timepassed['months'] .' months.';
-                    continue;
+                if ($person['staff_last_promotion']) {
+                    $timepassed = $this->getAge($person['staff_last_promotion'], current_date());                    
+                    $years_needed = 1000;
+                    if ($person['staff_grade'] >= 1 && $person['staff_grade'] <= 7) {
+                        $years_needed = 2;
+                    } else
+                    if ($person['staff_grade'] >= 8 && $person['staff_grade'] <= 14) {
+                        $years_needed = 3;
+                    } else
+                    if ($person['staff_grade'] >= 15 && $person['staff_grade'] < 18) {
+                        $years_needed = 4;
+                    }
+    
+                    if ($timepassed['years'] > $years_needed || ($timepassed['years'] === $years_needed && $timepassed['months'] >= 0)) {
+                        array_push($promotion, $person);
+                        $promotion[count($promotion)-1]['retirement_type'] = "Same level for " . $timepassed['years'] . ' years ' . $timepassed['months'] .' months.';
+                        continue;
+                    }
                 }
             }
         }
@@ -247,11 +376,22 @@ class Staff
     }
     public function mark_promote($new_level, $staff_id)
     {
-        $s = $this->db->prepare("UPDATE `staff` SET `staff_grade` = :g, `staff_last_promotion` = :dt WHERE `staff_id` = :i");
+        $s = $this->db->prepare("UPDATE `staff` SET `staff_grade` = :g, `staff_last_promotion` = :dt, `staff_status` = 'A' WHERE `staff_id` = :i");
         $s->bindParam(":g", $new_level);
         $s->bindParam(":i", $staff_id);
         $datetime = current_date();
         $s->bindParam(":dt", $datetime);
+
+        if ($s->execute()) {
+            return true;
+        }
+        return false;
+    }
+    public function make_promote_approval($user_id, $staff_id)
+    {
+        $s = $this->db->prepare("UPDATE `staff` SET `staff_status` = 'AP', `staff_promotion_requested_by` = :r WHERE `staff_id` = :i");
+        $s->bindParam(":r", $user_id);
+        $s->bindParam(":i", $staff_id);
 
         if ($s->execute()) {
             return true;
@@ -271,7 +411,16 @@ class Staff
     
     public function get_all_staff()
     {
-        $q = "SELECT * FROM `staff` JOIN `mda` ON `staff_mda_id` = `mda_id` WHERE `staff_status` = 'A'";
+        $q = "SELECT * FROM `staff` JOIN `mda` ON `staff_mda_id` = `mda_id` WHERE `staff_status` != 'R'";
+        $s = $this->db->prepare($q);
+        if ($s->execute()) {
+            return $s->fetchAll();
+        }
+        return [];
+    }
+    public function get_all_retired_staff()
+    {
+        $q = "SELECT * FROM `staff` JOIN `mda` ON `staff_mda_id` = `mda_id` WHERE `staff_status` = 'R'";
         $s = $this->db->prepare($q);
         if ($s->execute()) {
             return $s->fetchAll();
@@ -281,7 +430,18 @@ class Staff
 
     public function get_all_staff_by($col, $val)
     {
-        $q = "SELECT * FROM `staff` JOIN `mda` ON `staff_mda_id` = `mda_id` WHERE `$col` = :v";
+        $q = "SELECT * FROM `staff` JOIN `mda` ON `staff_mda_id` = `mda_id` WHERE `$col` = :v AND `staff_status` != 'R'";
+        $s = $this->db->prepare($q);
+        $s->bindParam(":v", $val);
+        if ($s->execute()) {
+            return $s->fetchAll();
+        }
+        return [];
+    }
+
+    public function get_all_retired_staff_by($col, $val)
+    {
+        $q = "SELECT * FROM `staff` JOIN `mda` ON `staff_mda_id` = `mda_id` WHERE `$col` = :v AND `staff_status` = 'R'";
         $s = $this->db->prepare($q);
         $s->bindParam(":v", $val);
         if ($s->execute()) {

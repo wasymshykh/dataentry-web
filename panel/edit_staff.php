@@ -39,7 +39,7 @@ $ranks = ['J' => 'Junior', 'S' => 'Senior'];
 $grades = ['17' => 'Seventeen', '18' => 'Eighteen'];
 $cadres = ['E' => 'Example', 'G' => 'Good'];
 $mdas = $mda->get_all();
-$banks = ['1' => 'Bank of US', '2' => 'Bank of Cali'];
+$banks = $s->get_all_banks();
 $fund_admins = ['1' => 'Anas', '2' => 'Brandon'];
 $nhis_hospitals = ['1' => 'Korangi Hospital', '2' => 'Malir Hospital'];
 

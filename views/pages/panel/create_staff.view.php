@@ -1,3 +1,5 @@
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+
 <div class="border-bottom pt-2 pb-2 mb-2">
     <h3 class="text-center font-weight-light">Create <b>Staff</b></h3>
 </div>
@@ -94,7 +96,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <select name="origin" id="origin" class="form-control">
+                        <select name="origin" id="origin" class="form-control select2">
                             <?php foreach ($origins as $key => $value): ?>
                                 <option value="<?=$key?>" <?=(isset($_POST['origin']) && $_POST['origin']===$key)?'selected':''?>><?=$value?></option>
                             <?php endforeach; ?>
@@ -239,11 +241,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <select name="present-rank" id="present-rank" class="form-control">
-                            <?php foreach ($ranks as $key => $value): ?>
-                                <option value="<?=$key?>" <?=(isset($_POST['present-rank']) && $_POST['present-rank']===$key)?'selected':''?>><?=$value?></option>
-                            <?php endforeach; ?>
-                        </select>
+                        <input type="text" name="present-rank" id="present-rank" class="form-control" value="<?=$_POST['present-rank'] ?? ''?>" readonly>
                     </div>
                 </div>
 
@@ -253,7 +251,8 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <select name="present-grade" id="present-grade" class="form-control">
+                        <select name="present-grade" id="present-grade" class="form-control select2">
+                            <option value=""></option>
                             <?php foreach ($grades as $key => $value): ?>
                                 <option value="<?=$key?>" <?=(isset($_POST['present-grade']) && $_POST['present-grade']===$key)?'selected':''?>><?=$value?></option>
                             <?php endforeach; ?>
@@ -289,7 +288,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <select name="mda" id="mda" class="form-control">
+                        <select name="mda" id="mda" class="form-control select2">
                             <?php foreach ($mdas as $key => $value): ?>
                                 <option value="<?=$value['mda_id']?>" <?=(isset($_POST['mda']) && $_POST['mda']===$value['mda_id'])?'selected':''?>><?=$value['mda_name']?></option>
                             <?php endforeach; ?>
@@ -313,7 +312,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <select name="last-posting" id="last-posting" class="form-control">
+                        <select name="last-posting" id="last-posting" class="form-control select2">
                             <option value=""></option>
                             <?php foreach ($mdas as $key => $value): ?>
                                 <option value="<?=$value['mda_id']?>" <?=(isset($_POST['last-posting']) && $_POST['last-posting']===$value['mda_id'])?'selected':''?>><?=$value['mda_name']?></option>
@@ -378,7 +377,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <select name="bank" id="bank" class="form-control">
+                        <select name="bank" id="bank" class="form-control select2">
                             <option value=""></option>
                             <?php foreach ($banks as $key => $value): ?>
                                 <option value="<?=$key?>" <?=(isset($_POST['bank']) && $_POST['bank']===$value)?'selected':''?>><?=$value?></option>
@@ -393,7 +392,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <input type="text" class="form-control" name="account-no" id="account-no" placeholder="account No" value="<?= $_POST['account-no'] ?? '' ?>">
+                        <input type="text" class="form-control" name="account-no" id="account-no" placeholder="account no" value="<?= $_POST['account-no'] ?? '' ?>">
                     </div>
                 </div>
                 
@@ -411,7 +410,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <select name="fund-admin" id="fund-admin" class="form-control">
+                        <select name="fund-admin" id="fund-admin" class="form-control select-admin">
                             <option value=""></option>
                             <?php foreach ($fund_admins as $key => $value): ?>
                                 <option value="<?=$key?>" <?=(isset($_POST['fund-admin']) && $_POST['fund-admin']===$value)?'selected':''?>><?=$value?></option>
@@ -466,7 +465,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <select name="nhis" id="nhis" class="form-control">
+                        <select name="nhis" id="nhis" class="form-control select-nhis">
                             <option value=""></option>
                             <?php foreach ($nhis_hospitals as $key => $value): ?>
                                 <option value="<?=$key?>" <?=(isset($_POST['nhis']) && $_POST['nhis']===$value)?'selected':''?>><?=$value?></option>
@@ -544,8 +543,16 @@
 
 <script type="text/javascript" src="https://unpkg.com/webcam-easy/dist/webcam-easy.min.js"></script>
 <script src="<?=URL?>/static/js/script-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
 
 <script>
+
+    $(document).ready(function() {
+        $('.select2').select2();
+        $('.select-admin').select2({tags: true});
+        $('.select-nhis').select2({tags: true});
+    });
 
     function dateDiff(startingDate, endingDate) {
         var startDate = new Date(new Date(startingDate).toISOString().substr(0, 10));
@@ -588,6 +595,11 @@
         var diff = dateDiff(starts, ends);
         $('#duration-mda').val(diff);
     })
+
+    $('#present-grade').on('change', (e) => {
+        $('#present-rank').val($('#present-grade').val());
+    })
+
 
     const takephotobtn = document.getElementById('takePhotoBtn');
 

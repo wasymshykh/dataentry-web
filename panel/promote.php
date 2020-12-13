@@ -32,7 +32,16 @@ if (!$found) {
 
 $record_level = ((int)$record_level) + 1;
 
-$result = $s->mark_promote($record_level, $record_id);
+if ($logged['user_role'] === 'M') {
+    $result = $s->make_promote_approval($logged['user_id'], $record_id);
+    if ($result) {
+        $_SESSION['status'] = ['type' => 'success', 'message' => 'Promotion from level '. ($record_level-1) .' to ' . $record_level .' is successfully requested. Awaiting for the admin approval.'];
+    }
+    go(URL . '/panel/promotion');
+
+} else {
+    $result = $s->mark_promote($record_level, $record_id);
+}
 
 if ($result) {
     $_SESSION['status'] = ['type' => 'success', 'message' => 'Staff is successfully promoted from level '. ($record_level-1) .' to ' . $record_level .'.'];

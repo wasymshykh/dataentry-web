@@ -38,7 +38,16 @@
                             <li class="nav-item"><a href="<?=URL?>/panel/manage_users" class="nav-link"><i class="fa fa-users"></i> Users</a></li>
                             <?php endif; ?>
                             <li class="nav-item"><a href="<?=URL?>/panel/mda" class="nav-link"><i class="fa fa-building"></i> <?=$logged['user_role'] === 'M' ? 'View' :''?> MDA</a></li>
-                            <li class="nav-item"><a href="<?=URL?>/panel/staff" class="nav-link"><i class="fa fa-black-tie"></i> Staff</a></li>
+                            <li class="nav-item dropdown">
+                                <a href="<?=URL?>/panel/staff" class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-black-tie"></i> Staff
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="<?=URL?>/panel/staff">Active Staff</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="<?=URL?>/panel/retired_staff">Retired Staff</a>
+                                </div>
+                            </li>
                         <?php endif; ?>
                         <?php if ($logged['user_role'] !== 'M'): ?>
                             <li class="nav-item"><a href="<?=URL?>/panel/create_staff" class="nav-link"><i class="fa fa-plus"></i> Add Entry</a></li>

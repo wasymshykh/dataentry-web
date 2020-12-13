@@ -62,6 +62,7 @@ if (isset($_POST) && !empty($_POST)) {
             $password = password_hash($password, PASSWORD_BCRYPT);
             if($u->create($username, $password, $type, $status)) {
                 $success = "User has been successfully added!";
+                $_POST = [];
                 $users = $u->get_users();
             } else {
                 array_push($errors, "Could not create the user");

@@ -5,6 +5,7 @@ require '../app/start.php';
 if (!$logged) {
     go(URL . '/login');
 }
+$staff = new Staff($db);
 
 $success = false;
 $error = false;
@@ -20,18 +21,16 @@ if (isset($_SESSION['status']) && !empty($_SESSION['status'])) {
 $mda = new Mda($db);
 
 $sexes = ['M' => 'Male', 'F' => 'Female', 'O' => 'Other'];
-$origins = ['E' => 'Example'];
+$origins = $staff->get_all_origins();
 $marritals = ['S' => 'Single', 'M' => 'Married'];
-$ranks = ['J' => 'Junior', 'S' => 'Senior'];
-$grades = ['17' => 'Seventeen', '18' => 'Eighteen'];
-$cadres = ['E' => 'Example', 'G' => 'Good'];
+$grades = $staff->get_all_grades();
+$cadres = $staff->get_all_cadre();
 $mdas = $mda->get_all();
-$banks = ['1' => 'Bank of US', '2' => 'Bank of Cali'];
-$fund_admins = ['1' => 'Anas', '2' => 'Brandon'];
-$nhis_hospitals = ['1' => 'Korangi Hospital', '2' => 'Malir Hospital'];
+$banks = $staff->get_all_banks();
+$fund_admins = ['Anas' => 'Anas', 'Brandon' => 'Brandon'];
+$nhis_hospitals = ['Korangi Hospital' => 'Korangi Hospital', 'Malir Hospital' => 'Malir Hospital'];
 
 if (isset($_POST) && !empty($_POST)) {
-    $staff = new Staff($db);
 
     $result = $staff->handle_create($_POST, $logged['user_id']);
 

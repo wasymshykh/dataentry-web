@@ -18,9 +18,9 @@ if (isset($_SESSION['status']) && !empty($_SESSION['status'])) {
 }
 
 $s = new Staff($db);
+$u = new Users($db);
 
 $peoples = $s->get_all_promotion();
-
 $datatable = true;
 
 include_once LAYOUT_DIR.'header.view.php';

@@ -11,6 +11,7 @@ $u = new Users($db);
 $m = new Mda($db);
 
 $staff = $s->get_all_staff();
+$retired_staff = $s->get_all_retired_staff();
 $users = $u->get_users();
 $mdas = $m->get_all();
 

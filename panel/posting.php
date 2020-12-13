@@ -18,6 +18,8 @@ if (isset($_SESSION['status']) && !empty($_SESSION['status'])) {
 }
 
 $s = new Staff($db);
+$u = new Users($db);
+$m = new Mda($db);
 
 $peoples = $s->get_all_posting();
 
