@@ -23,7 +23,7 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <a class="navbar-brand" href="<?=URL?><?=$logged ? '/panel' : ''?>">
                 <img src="<?=URL?>/static/images/logo-icon.png" width="30" height="30" class="d-inline-block align-top" alt="<?=$settings->fetch('site_title')?>" loading="lazy">
-                <b>Data Entry</b> System
+                <b>PPRIS</b>
             </a>
 
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-nav" aria-controls="main-nav" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,7 +35,8 @@
                     <?php if ($logged): ?>
                         <?php if ($logged['user_role'] === 'A' || $logged['user_role'] === 'M'): ?>
                             <?php if($logged['user_role'] !== 'M'): ?>
-                            <li class="nav-item"><a href="<?=URL?>/panel/manage_users" class="nav-link"><i class="fa fa-users"></i> Users</a></li>
+                                <li class="nav-item"><a href="<?=URL?>/panel/manage_users" class="nav-link"><i class="fa fa-users"></i> Users</a></li>
+                                <li class="nav-item"><a href="<?=URL?>/panel/ranks" class="nav-link"><i class="fa fa-level-up"></i> Ranks</a></li>
                             <?php endif; ?>
                             <li class="nav-item"><a href="<?=URL?>/panel/mda" class="nav-link"><i class="fa fa-building"></i> <?=$logged['user_role'] === 'M' ? 'View' :''?> MDA</a></li>
                             <li class="nav-item dropdown">

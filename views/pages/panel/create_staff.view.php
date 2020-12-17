@@ -253,8 +253,8 @@
                         </div>
                         <select name="present-grade" id="present-grade" class="form-control select2">
                             <option value=""></option>
-                            <?php foreach ($grades as $key => $value): ?>
-                                <option value="<?=$key?>" <?=(isset($_POST['present-grade']) && $_POST['present-grade']===$key)?'selected':''?>><?=$value?></option>
+                            <?php foreach ($ranks as $rank): ?>
+                                <option value="<?=$rank['rank_id']?>" <?=(isset($_POST['present-grade']) && $_POST['present-grade']===$rank['rank_id'])?'selected':''?>><?=$rank['rank_grade']?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -596,10 +596,11 @@
         $('#duration-mda').val(diff);
     })
 
-    $('#present-grade').on('change', (e) => {
-        $('#present-rank').val($('#present-grade').val());
-    })
+    let grades = {<?php foreach($ranks as $rank): ?> '<?=$rank['rank_id']?>': '<?=$rank['rank_rank']?>', <?php endforeach; ?>};
 
+    $('#present-grade').on('change', (e) => {
+        $('#present-rank').val(grades[$('#present-grade').val()]);
+    })
 
     const takephotobtn = document.getElementById('takePhotoBtn');
 

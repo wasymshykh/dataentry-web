@@ -158,6 +158,62 @@ class Staff
         ];
     }
 
+    public function get_all_ranks ()
+    {
+        
+        $q = "SELECT * FROM `ranks` ORDER BY `rank_sort` ASC";
+
+        $s = $this->db->prepare($q);
+        
+        if ($s->execute()) {
+            return $s->fetchAll();
+        }
+        return [];
+    }
+
+    public function insert_rank ($rankRank, $grade, $years, $sort)
+    {
+        $q = "INSERT INTO `ranks` (`rank_rank`, `rank_grade`, `rank_years`, `rank_sort`, `rank_created_on`) VALUE (:r, :g, :y, :s, :dt)";
+        $s = $this->db->prepare($q);
+        $s->bindParam(":r", $rankRank);
+        $s->bindParam(":g", $grade);
+        $s->bindParam(":y", $years);
+        $s->bindParam(":s", $sort);
+        $datetime = current_date();
+        $s->bindParam(":dt", $datetime);
+
+        return $s->execute();
+    }
+
+    public function update_ranks ($ranks)
+    {
+        try {
+            $this->db->beginTransaction();
+
+            $q = "UPDATE `ranks` SET `rank_rank` = :r, `rank_grade` = :g, `rank_years` = :y, `rank_sort` = :s WHERE `rank_id` = :i";
+            $s = $this->db->prepare($q);
+            
+            foreach ($ranks as $rank) {
+                $s->bindParam(":r", $rank['rank_rank']);
+                $s->bindParam(":g", $rank['rank_grade']);
+                $s->bindParam(":y", $rank['rank_years']);
+                $s->bindParam(":s", $rank['sort']);
+                $s->bindParam(":i", $rank['rank_id']);
+                if (!$s->execute()) {
+                    throw new Exception("I can't!");
+                }
+            }
+            
+            $this->db->commit();
+            
+            return true;
+            
+        } catch (Exception $e){
+            $this->db->rollback();
+            return false;
+        }
+    }
+
 
     public function handle_edit($data, $staff, $user_id)
     {

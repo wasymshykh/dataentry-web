@@ -23,7 +23,7 @@ $mda = new Mda($db);
 $sexes = ['M' => 'Male', 'F' => 'Female', 'O' => 'Other'];
 $origins = $staff->get_all_origins();
 $marritals = ['S' => 'Single', 'M' => 'Married'];
-$grades = $staff->get_all_grades();
+$ranks = $staff->get_all_ranks();
 $cadres = $staff->get_all_cadre();
 $mdas = $mda->get_all();
 $banks = $staff->get_all_banks();
