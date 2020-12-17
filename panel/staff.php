@@ -32,8 +32,7 @@ if (isset($_GET['d']) && is_numeric($_GET['d']) && !empty($_GET['d'])) {
     $peoples = $staff->get_all_staff_by('mda_id', $mda['mda_id']);
     $page_title = "View <b>" . $mda['mda_name'] . "</b> Staff";
 } else {
-
-    $peoples = $staff->get_all_staff();
+    $peoples = $staff->get_all_staff_everything();
     $page_title = "View <b>Staff</b>";
 }
 

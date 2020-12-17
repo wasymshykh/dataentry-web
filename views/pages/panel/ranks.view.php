@@ -52,7 +52,7 @@
                     </div>
                     <div class="col">
                         <div class="row">
-                            <div class="col-lg-3">
+                            <div class="col-lg-6">
                                 <div class="input-group border-right pr-3">
                                     <label for="rank-<?=$rank['rank_id']?>" class="input-group-prepend m-0">
                                         <span class="input-group-text">Rank</span>
@@ -60,7 +60,7 @@
                                     <input type="text" name="ranks[<?=$rank['rank_id']?>]" id="rank-<?=$rank['rank_id']?>" class="form-control" value="<?=$rank['rank_rank']?>" placeholder="write here">
                                 </div>
                             </div>
-                            <div class="col-lg-6 pl-0">
+                            <div class="col-lg-3 pl-0">
                                 <div class="input-group border-right pr-3">
                                     <label for="grade-<?=$rank['rank_id']?>" class="input-group-prepend m-0">
                                         <span class="input-group-text">Grade Level</span>

@@ -148,13 +148,24 @@ class Staff
 
     public function get_all_ranks ()
     {
-        
         $q = "SELECT * FROM `ranks` ORDER BY `rank_sort` ASC";
-
         $s = $this->db->prepare($q);
-        
         if ($s->execute()) {
             return $s->fetchAll();
+        }
+        return [];
+    }
+
+    public function get_rank_by ($col, $val, $multiple = false)
+    {
+        $q = "SELECT * FROM `ranks` WHERE `$col` = :v";
+        $s = $this->db->prepare($q);
+        $s->bindParam(':v', $val);
+        if ($s->execute()) {
+            if ($multiple) {
+                return $s->fetchAll();
+            }
+            return $s->fetch();
         }
         return [];
     }
@@ -377,23 +388,18 @@ class Staff
 
     public function get_all_promotion()
     {
-        $staff = $this->get_all_staff();
+        $staff = $this->get_all_staff_everything();
+
         $promotion = [];
         foreach ($staff as $person) {
-            if ($person['staff_grade']) {
+            if ($person['staff_rank']) {
+                if ($person['rank_sort'] === '1') {
+                    continue;
+                }
                 if ($person['staff_last_promotion']) {
                     $timepassed = $this->getAge($person['staff_last_promotion'], current_date());                    
-                    $years_needed = 1000;
-                    if ($person['staff_grade'] >= 1 && $person['staff_grade'] <= 7) {
-                        $years_needed = 2;
-                    } else
-                    if ($person['staff_grade'] >= 8 && $person['staff_grade'] <= 14) {
-                        $years_needed = 3;
-                    } else
-                    if ($person['staff_grade'] >= 15 && $person['staff_grade'] < 18) {
-                        $years_needed = 4;
-                    }
-    
+                    $years_needed = (int)$person['rank_years'];
+                    
                     if ($timepassed['years'] > $years_needed || ($timepassed['years'] === $years_needed && $timepassed['months'] >= 0)) {
                         array_push($promotion, $person);
                         $promotion[count($promotion)-1]['retirement_type'] = "Same level for " . $timepassed['years'] . ' years ' . $timepassed['months'] .' months.';
@@ -404,6 +410,29 @@ class Staff
         }
         
         return $promotion;
+    }
+
+    public function get_next_level($rank_id)
+    {
+        $current = $this->get_rank_by('rank_id', $rank_id);
+        
+        if (empty($current)) {
+            return false;
+        }
+
+        if ($current['rank_sort'] === '1') {
+            return false;
+        }
+
+        $sort = $current['rank_sort'] - 1;
+
+        $next = $this->get_rank_by('rank_sort', $sort);
+
+        if (empty($next)) {
+            return false;
+        }
+
+        return [$next['rank_id'], $next['rank_grade']];
     }
 
     public function mark_retired($staff_id)
@@ -418,10 +447,10 @@ class Staff
         }
         return false;
     }
-    public function mark_promote($new_level, $staff_id)
+    public function mark_promote($rank_id, $staff_id)
     {
-        $s = $this->db->prepare("UPDATE `staff` SET `staff_grade` = :g, `staff_last_promotion` = :dt, `staff_status` = 'A' WHERE `staff_id` = :i");
-        $s->bindParam(":g", $new_level);
+        $s = $this->db->prepare("UPDATE `staff` SET `staff_rank` = :r, `staff_last_promotion` = :dt, `staff_status` = 'A' WHERE `staff_id` = :i");
+        $s->bindParam(":r", $rank_id);
         $s->bindParam(":i", $staff_id);
         $datetime = current_date();
         $s->bindParam(":dt", $datetime);
@@ -462,6 +491,15 @@ class Staff
         }
         return [];
     }
+    public function get_all_staff_everything()
+    {
+        $q = "SELECT * FROM `staff` JOIN `mda` ON `staff_mda_id` = `mda_id` JOIN `ranks` ON `staff_rank` = `rank_id` WHERE `staff_status` != 'R'";
+        $s = $this->db->prepare($q);
+        if ($s->execute()) {
+            return $s->fetchAll();
+        }
+        return [];
+    }
     public function get_all_retired_staff()
     {
         $q = "SELECT * FROM `staff` JOIN `mda` ON `staff_mda_id` = `mda_id` WHERE `staff_status` = 'R'";
@@ -474,7 +512,7 @@ class Staff
 
     public function get_all_staff_by($col, $val)
     {
-        $q = "SELECT * FROM `staff` JOIN `mda` ON `staff_mda_id` = `mda_id` WHERE `$col` = :v AND `staff_status` != 'R'";
+        $q = "SELECT * FROM `staff` JOIN `mda` ON `staff_mda_id` = `mda_id` JOIN `ranks` ON `staff_rank` = `rank_id` WHERE `$col` = :v AND `staff_status` != 'R'";
         $s = $this->db->prepare($q);
         $s->bindParam(":v", $val);
         if ($s->execute()) {
@@ -497,6 +535,17 @@ class Staff
     public function get_staff_by($col, $val)
     {
         $q = "SELECT * FROM `staff` JOIN `mda` ON `staff_mda_id` = `mda_id` WHERE `$col` = :v";
+        $s = $this->db->prepare($q);
+        $s->bindParam(":v", $val);
+        if ($s->execute()) {
+            return $s->fetch();
+        }
+        return false;
+    }
+
+    public function get_staff_by_everything ($col, $val)
+    {
+        $q = "SELECT * FROM `staff` JOIN `mda` ON `staff_mda_id` = `mda_id` JOIN `ranks` ON `staff_rank` = `rank_id` JOIN `lgas` ON `staff_lga` = `lga_id` JOIN `states` ON `lga_state_id` = `state_id` WHERE `$col` = :v AND `staff_status` != 'R'";
         $s = $this->db->prepare($q);
         $s->bindParam(":v", $val);
         if ($s->execute()) {
@@ -535,7 +584,6 @@ class Staff
             'confirmation' => 'confirmation',
             'last-promotion' => 'last_promotion',
             'present-rank' => 'rank',
-            'present-grade' => 'grade',
             'cadre' => 'cadre',
             'mda' => 'mda_id',
             'mda-posted' => 'mda_posted',

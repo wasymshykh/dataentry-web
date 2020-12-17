@@ -250,7 +250,12 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <input type="text" name="present-rank" id="present-rank" class="form-control" value="<?=$_POST['present-rank'] ?? ''?>" readonly>
+                        <select name="present-rank" id="present-rank" class="form-control select2">
+                            <option value=""></option>
+                            <?php foreach ($ranks as $rank): ?>
+                                <option value="<?=$rank['rank_id']?>" <?=(isset($_POST['present-rank']) && $_POST['present-rank']===$rank['rank_id'])?'selected':''?>><?=$rank['rank_rank']?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                 </div>
 
@@ -260,12 +265,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <select name="present-grade" id="present-grade" class="form-control select2">
-                            <option value=""></option>
-                            <?php foreach ($ranks as $rank): ?>
-                                <option value="<?=$rank['rank_id']?>" <?=(isset($_POST['present-grade']) && $_POST['present-grade']===$rank['rank_id'])?'selected':''?>><?=$rank['rank_grade']?></option>
-                            <?php endforeach; ?>
-                        </select>
+                        <input type="text" name="present-grade" id="present-grade" class="form-control" value="<?=$_POST['present-grade'] ?? ''?>" readonly>
                     </div>
                 </div>
 
@@ -616,10 +616,10 @@
         $('#duration-mda').val(diff);
     })
 
-    let grades = {<?php foreach($ranks as $rank): ?> '<?=$rank['rank_id']?>': '<?=$rank['rank_rank']?>', <?php endforeach; ?>};
+    let grades = {<?php foreach($ranks as $rank): ?> '<?=$rank['rank_id']?>': '<?=$rank['rank_grade']?>', <?php endforeach; ?>};
 
-    $('#present-grade').on('change', (e) => {
-        $('#present-rank').val(grades[$('#present-grade').val()]);
+    $('#present-rank').on('change', (e) => {
+        $('#present-grade').val(grades[$('#present-rank').val()]);
     })
 
     const takephotobtn = document.getElementById('takePhotoBtn');

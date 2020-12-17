@@ -12,7 +12,14 @@ if (!isset($_GET['s']) || !is_numeric($_GET['s']) && empty($_GET['s'])) {
 }
 
 $s = new Staff($db);
-$staff = $s->get_staff_by('staff_id', normal_text($_GET['s']));
+$m = new Mda($db);
+
+$staff = $s->get_staff_by_everything('staff_id', normal_text($_GET['s']));
+
+$marritals = ['S' => 'Single', 'M' => 'Married'];
+
+$cadres = $s->get_all_cadre();
+$banks = $s->get_all_banks();
 
 if (!$staff || empty($staff)) {
     $_SESSION['status'] = ['type' => 'error', 'message' => 'Staff not found.'];

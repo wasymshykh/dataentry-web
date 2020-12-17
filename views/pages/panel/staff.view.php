@@ -36,8 +36,8 @@
                     <td><?=$people['staff_id']?></td>
                     <td><?=$people['staff_first_name'] . ' ' . $people['staff_middle_name'] . ' ' . $people['staff_last_name']?></td>
                     <td><?=$people['staff_dob'] ? normal_date($people['staff_dob'], 'M d, Y') : '-'?></td>
-                    <td><?=$people['staff_rank']?></td>
-                    <td><?=$people['staff_grade']?></td>
+                    <td><?=$people['rank_rank']?></td>
+                    <td><?=$people['rank_grade']?></td>
                     <td><a href="<?=URL?>/panel/staff?d=<?=$people['mda_id']?>"><?=$people['mda_name']?></a></td>
                     <td><?=$people['staff_mda_posted'] ? normal_date($people['staff_mda_posted'], 'M d, Y') : '-'?></td>
                     <td><?=$people['staff_home_address'] ?? '-'?></td>
