@@ -22,6 +22,7 @@ $mda = new Mda($db);
 
 $sexes = ['M' => 'Male', 'F' => 'Female', 'O' => 'Other'];
 $origins = $staff->get_all_origins();
+$lgas = $staff->get_all_lgas();
 $marritals = ['S' => 'Single', 'M' => 'Married'];
 $ranks = $staff->get_all_ranks();
 $cadres = $staff->get_all_cadre();

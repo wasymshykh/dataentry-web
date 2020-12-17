@@ -97,8 +97,9 @@
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
                         <select name="origin" id="origin" class="form-control select2">
-                            <?php foreach ($origins as $key => $value): ?>
-                                <option value="<?=$key?>" <?=(isset($_POST['origin']) && $_POST['origin']===$key)?'selected':''?>><?=$value?></option>
+                            <option value=""></option>
+                            <?php foreach ($origins as $state): ?>
+                                <option value="<?=$state['state_id']?>" <?=(isset($_POST['origin']) && $_POST['origin']=== $state['state_id'])?'selected':''?>><?=$state['state_name']?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -110,7 +111,15 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <input type="text" class="form-control" name="lga" id="lga" placeholder="LGA" value="<?= $_POST['lga'] ?? '' ?>">
+                        
+                        <select name="lga" id="lga" class="form-control select2">
+                            <option value=""></option>
+                            <?php if(isset($_POST['origin'])): ?>
+                                <?php $s_lgas = $staff->get_lgas_by('lga_state_id', $_POST['origin']); foreach($s_lgas as $s_lga): ?>
+                                    <option value="<?=$s_lga['lga_id']?>" <?=(isset($_POST['lga']) && $_POST['lga']=== $s_lga['lga_id'])?'selected':''?>><?=$s_lga['lga_name']?></option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </select>
                     </div>
                 </div>
 
@@ -547,6 +556,17 @@
 
 
 <script>
+
+    let state_lgas = {<?php foreach ($origins as $state): $s_lgas = $staff->get_lgas_by('lga_state_id', $state['state_id']); ?>
+        '<?=$state['state_id']?>': [<?php foreach ($s_lgas as $s_lga): ?>{'id':'<?=$s_lga['lga_id']?>', 'text':"<?=$s_lga['lga_name']?>"},<?php endforeach?>],
+        <?php endforeach; ?>};
+
+    $('#origin').on('change', (e) => {
+        let state_data = state_lgas[e.target.value];
+        $('#lga').html('').select2({
+            data: state_data
+        })
+    })
 
     $(document).ready(function() {
         $('.select2').select2();

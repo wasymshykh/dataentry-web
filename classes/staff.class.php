@@ -78,45 +78,33 @@ class Staff
 
     public function get_all_origins()
     {
-        return [
-            'fct' => 'Federal Capital Territory',
-            'ab' => 'Abia',
-            'ad' => 'Adamawa',
-            'ak' => 'Akwa Ibom',
-            'an' => 'Anambra',
-            'ba' => 'Bauchi',
-            'bay' => 'Bayelsa',
-            'be' => 'Benue',
-            'bo' => 'Borno',
-            'cr' => 'Cross River',
-            'de' => 'Delta',
-            'eb' => 'Ebonyi',
-            'ed' => 'Edo',
-            'ek' => 'Ekiti',
-            'en' => 'Enugu',
-            'go' => 'Gombe',
-            'im' => 'Imo',
-            'ji' => 'Jigawa',
-            'ka' => 'Kaduna',
-            'kan' => 'Kano',
-            'kat' => 'Katsina',
-            'ke' => 'Kebbi',
-            'ko' => 'Kogi',
-            'kw' => 'Kwara',
-            'la' => 'Lagos',
-            'na' => 'Nasarawa',
-            'ni' => 'Niger',
-            'og' => 'Ogun',
-            'on' => 'Ondo',
-            'os' => 'Osun',
-            'oy' => 'Oyo',
-            'pl' => 'Plateau',
-            'ri' => 'Rivers',
-            'so' => 'Sokoto',
-            'ta' => 'Taraba',
-            'yo' => 'Yobe',
-            'za' => 'Zamfara',
-        ];
+        $q = "SELECT * FROM `states`";
+        $s = $this->db->prepare($q);
+        if ($s->execute()) {
+            return $s->fetchAll();
+        }
+        return [];
+    }
+
+    public function get_all_lgas()
+    {
+        $q = "SELECT * FROM `lgas`";
+        $s = $this->db->prepare($q);
+        if ($s->execute()) {
+            return $s->fetchAll();
+        }
+        return [];
+    }
+
+    public function get_lgas_by ($col, $val)
+    {
+        $q = "SELECT * FROM `lgas` WHERE `$col` = :v";
+        $s = $this->db->prepare($q);
+        $s->bindParam(":v", $val);
+        if ($s->execute()) {
+            return $s->fetchAll();
+        }
+        return [];
     }
 
     public function get_all_banks ()
