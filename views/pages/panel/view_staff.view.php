@@ -123,7 +123,7 @@
                     <div class="card-header"><i class="fas fa-briefcase mr-2"></i> Employment</div>
                     <dd class="pl-4 pt-2">
                         <dl><strong class="mr-2"><i class="fa fa-circle-o-notch mr-2"></i> Confirmation Date</strong> <?=$staff['staff_confirmation'] ? normal_date($staff['staff_confirmation'], 'M d, Y') : ''?></dl>
-                        <dl><strong class="mr-2"><i class="fa fa-circle-o-notch mr-2"></i> Cadre</strong> <?=$cadres[$staff['staff_cadre']]?></dl>
+                        <dl><strong class="mr-2"><i class="fa fa-circle-o-notch mr-2"></i> Cadre</strong> <?=$staff['staff_cadre']?></dl>
                         <dl><strong class="mr-2"><i class="fa fa-circle-o-notch mr-2"></i> Last Promotion Date</strong> </dl>
                         <dl><strong class="mr-2"><i class="fa fa-circle-o-notch mr-2"></i> Last Posting</strong> <?=$m->get_mda_by('mda_id', $staff['staff_last_posting'])['mda_name']?></dl>
                         <dl><strong class="mr-2"><i class="fa fa-circle-o-notch mr-2"></i> Bank</strong> <?=$banks[$staff['staff_bank']]?></dl>

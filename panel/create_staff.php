@@ -28,8 +28,8 @@ $ranks = $staff->get_all_ranks();
 $cadres = $staff->get_all_cadre();
 $mdas = $mda->get_all();
 $banks = $staff->get_all_banks();
-$fund_admins = ['Anas' => 'Anas', 'Brandon' => 'Brandon'];
-$nhis_hospitals = ['Korangi Hospital' => 'Korangi Hospital', 'Malir Hospital' => 'Malir Hospital'];
+$fund_admins = [];
+$nhis_hospitals = [];
 
 if (isset($_POST) && !empty($_POST)) {
 

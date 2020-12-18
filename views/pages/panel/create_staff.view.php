@@ -275,7 +275,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <select name="cadre" id="cadre" class="form-control">
+                        <select name="cadre" id="cadre" class="form-control select-cadre">
                             <?php foreach ($cadres as $key => $value): ?>
                                 <option value="<?=$key?>" <?=(isset($_POST['cadre']) && $_POST['cadre']===$key)?'selected':''?>><?=$value?></option>
                             <?php endforeach; ?>
@@ -572,6 +572,7 @@
         $('.select2').select2();
         $('.select-admin').select2({tags: true});
         $('.select-nhis').select2({tags: true});
+        $('.select-cadre').select2({tags: true});
     });
 
     function dateDiff(startingDate, endingDate) {

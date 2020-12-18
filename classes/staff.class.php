@@ -57,23 +57,7 @@ class Staff
     }
 
     public function get_all_cadre() {
-        return ['A' => 'Admin', 'E' => 'Executive'];
-    }
-
-    public function get_all_grades()
-    {
-        return [
-            '17+' => 'Permanent Secretary', 
-            '17' => 'Director', 
-            '16' => 'Deputy Director', 
-            '15' => 'Assistant Director', 
-            '14' => 'Chief', 
-            '13' => 'Assistant Chief', 
-            '12' => 'Principal', 
-            '11' => 'Senior',
-            '9' => 'Admin G1',
-            '8' => 'Admin Officer'
-        ];
+        return ['Admin' => 'Admin', 'Executive' => 'Executive'];
     }
 
     public function get_all_origins()
