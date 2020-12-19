@@ -296,6 +296,41 @@ class Staff
         return $s->execute();
     }
 
+    public function get_all_changes()
+    {
+        $q = "SELECT * FROM `staff_changes` JOIN `users` ON `change_user_id` = `user_id`";
+        $s = $this->db->prepare($q);
+        if ($s->execute()){
+            return $s->fetchAll();
+        }
+        return [];
+    }
+    
+    public function get_all_changes_by($col, $val)
+    {
+        $q = "SELECT * FROM `staff_changes` JOIN `users` ON `change_user_id` = `user_id` WHERE `$col` = :v";
+        $s = $this->db->prepare($q);
+        $s->bindParam(':v', $val);
+        if ($s->execute()){
+            return $s->fetchAll();
+        }
+        return [];
+    }
+
+    public function remove_all_changes()
+    {
+        $q = "DELETE FROM `staff_changes`";
+        $s = $this->db->prepare($q);
+        return $s->execute();
+    }
+    public function remove_all_changes_by($col, $val)
+    {
+        $q = "DELETE FROM `staff_changes` WHERE `$col` = :v";
+        $s = $this->db->prepare($q);
+        $s->bindParam(':v', $val);
+        return $s->execute();
+    }
+
     public function create_file ()
     {
 

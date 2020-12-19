@@ -35,6 +35,9 @@
                     <?php if ($logged): ?>
                         <?php if ($logged['user_role'] === 'A' || $logged['user_role'] === 'M'): ?>
                             <?php if($logged['user_role'] !== 'M'): ?>
+                                <?php if (SUPER_ADMIN_ID === $logged['user_id']): ?>
+                                <li class="nav-item"><a href="<?=URL?>/panel/change_logs" class="nav-link"><i class="fa fa-tasks"></i> Logs</a></li>
+                                <?php endif; ?>
                                 <li class="nav-item"><a href="<?=URL?>/panel/manage_users" class="nav-link"><i class="fa fa-users"></i> Users</a></li>
                                 <li class="nav-item"><a href="<?=URL?>/panel/ranks" class="nav-link"><i class="fa fa-level-up"></i> Ranks</a></li>
                             <?php endif; ?>
