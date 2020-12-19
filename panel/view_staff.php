@@ -21,6 +21,9 @@ $marritals = ['S' => 'Single', 'M' => 'Married'];
 $cadres = $s->get_all_cadre();
 $banks = $s->get_all_banks();
 
+$retires = $s->getRetirement($staff['staff_dob'], $staff['staff_confirmation']);
+$next_promotion = $s->getNextPromotion($staff['staff_last_promotion'], $staff['rank_years']);
+
 if (!$staff || empty($staff)) {
     $_SESSION['status'] = ['type' => 'error', 'message' => 'Staff not found.'];
     go(URL . '/panel/staff');

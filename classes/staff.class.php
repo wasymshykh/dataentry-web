@@ -535,6 +535,28 @@ class Staff
         return false;
     }
 
+    public function getRetirement ($dob, $confimation)
+    {
+        $date_of_retirement = date('Y-m-d', strtotime($dob . '+60 Years'));
+        $timeleft = $this->getAge($date_of_retirement, current_date());
+
+        $date_of_retirement_2 = date('Y-m-d', strtotime($confimation . '+35 Years'));
+        $timeleft2 = $this->getAge($date_of_retirement_2, current_date());
+
+        if ((new DateTime($date_of_retirement)) < (new DateTime($date_of_retirement_2))) {
+            return [$date_of_retirement, $timeleft['years'].' Years '.$timeleft['months'].' Months '.$timeleft['days'].' Days'];
+        }
+
+        return [$date_of_retirement_2, $timeleft2['years'].' Years '.$timeleft2['months'].' Months '.$timeleft2['days'].' Days'];
+    }
+
+    public function getNextPromotion ($last_promotion, $years)
+    {
+        $date_of_promotion = date('Y-m-d', strtotime($last_promotion . "+$years Years"));
+        $timeleft = $this->getAge($date_of_promotion, current_date());
+        return [$date_of_promotion, $timeleft['years'].' Years '.$timeleft['months'].' Months '.$timeleft['days'].' Days'];
+    }
+
     public function getAge($dob,$condate) { 
         $birthdate = new DateTime(date("Y-m-d",  strtotime(implode('-', array_reverse(explode('/', $dob))))));
         $today= new DateTime(date("Y-m-d",  strtotime(implode('-', array_reverse(explode('/', $condate))))));

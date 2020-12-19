@@ -90,6 +90,28 @@
                     <p class="text-muted font-weight-light"><small>Duration in MDA</small></p>
                 </div>
             </div>
+                
+                <?php if(isset($retires) && !empty($retires)): ?>
+                <div class="col-4 mb-4">
+                    <div class="border text-center pt-2">
+                        <h6 class="bg-dark d-table mx-auto mb-2 py-2 px-2 text-light" style="font-size: 1.4em;"><i class="fa fa-circle-o"></i></h6>
+                        <h5 class="mb-0"><?=$retires[1]?></h5>
+                        <p class="text-muted font-weight-light"><small>Till Retirement</small></p>
+                        <p>Retires on <strong><?=normal_date($retires[0], 'M d, Y')?></strong></p>
+                    </div>
+                </div>
+                <?php endif; ?>
+            
+                <?php if(isset($next_promotion) && !empty($next_promotion)): ?>
+                <div class="col-4 mb-4">
+                    <div class="border text-center pt-2">
+                        <h6 class="bg-dark d-table mx-auto mb-2 py-2 px-2 text-light" style="font-size: 1.4em;"><i class="fa fa-circle-o"></i></h6>
+                        <h5 class="mb-0"><?=$next_promotion[1]?></h5>
+                        <p class="text-muted font-weight-light"><small>Till Next Promotion</small></p>
+                        <p>Promotion on <strong><?=normal_date($next_promotion[0], 'M d, Y')?></strong></p>
+                    </div>
+                </div>
+                <?php endif; ?>
             <?php else: ?>
             <div class="col-4 mb-4">
                 <div class="border text-center pt-2">
@@ -124,7 +146,7 @@
                     <dd class="pl-4 pt-2">
                         <dl><strong class="mr-2"><i class="fa fa-circle-o-notch mr-2"></i> Confirmation Date</strong> <?=$staff['staff_confirmation'] ? normal_date($staff['staff_confirmation'], 'M d, Y') : ''?></dl>
                         <dl><strong class="mr-2"><i class="fa fa-circle-o-notch mr-2"></i> Cadre</strong> <?=$staff['staff_cadre']?></dl>
-                        <dl><strong class="mr-2"><i class="fa fa-circle-o-notch mr-2"></i> Last Promotion Date</strong> </dl>
+                        <dl><strong class="mr-2"><i class="fa fa-circle-o-notch mr-2"></i> Last Promotion Date</strong> <?=$staff['staff_last_promotion'] ? normal_date($staff['staff_last_promotion'], 'M d, Y') : ''?></dl>
                         <dl><strong class="mr-2"><i class="fa fa-circle-o-notch mr-2"></i> Last Posting</strong> <?=$m->get_mda_by('mda_id', $staff['staff_last_posting'])['mda_name']?></dl>
                         <dl><strong class="mr-2"><i class="fa fa-circle-o-notch mr-2"></i> Bank</strong> <?=$banks[$staff['staff_bank']]?></dl>
                         <dl><strong class="mr-2"><i class="fa fa-circle-o-notch mr-2"></i> Account No</strong> <?=$staff['staff_account_no']?></dl>
