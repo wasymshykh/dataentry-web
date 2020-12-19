@@ -86,7 +86,11 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <input type="text" class="form-control" name="nationality" id="nationality" placeholder="Nationality" value="<?= $_POST['nationality'] ?? '' ?>">
+                        <select name="nationality" id="nationality" class="form-control select-nationality">
+                            <?php foreach ($nationalities as $key => $value): ?>
+                                <option value="<?=$key?>" <?=(isset($_POST['nationality']) && $_POST['nationality']===$key)?'selected':''?>><?=$value?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                 </div>
 
@@ -573,6 +577,7 @@
         $('.select-admin').select2({tags: true});
         $('.select-nhis').select2({tags: true});
         $('.select-cadre').select2({tags: true});
+        $('.select-nationality').select2({tags: true});
     });
 
     function dateDiff(startingDate, endingDate) {

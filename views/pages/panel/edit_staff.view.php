@@ -1,3 +1,5 @@
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+
 <div class="border-bottom pt-2 pb-2 mb-2">
     <a href="<?=URL?>/panel/staff" class="btn btn-sm btn-outline-dark"><i class="fa fa-arrow-left"></i> Back to staffs</a>
 
@@ -86,7 +88,11 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <input type="text" class="form-control" name="nationality" id="nationality" placeholder="Nationality" value="<?= $_POST['nationality'] ?? $staff['staff_nationality'] ?>">
+                        <select name="nationality" id="nationality" class="form-control select-nationality">
+                            <?php foreach ($nationalities as $key => $value): ?>
+                                <option value="<?=$key?>" <?=(isset($_POST['nationality']) && $_POST['nationality']===$key)?'selected':($staff['staff_nationality'] === $key ? 'selected' : '')?>><?=$value?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                 </div>
 
@@ -97,8 +103,9 @@
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
                         <select name="origin" id="origin" class="form-control">
-                            <?php foreach ($origins as $key => $value): ?>
-                                <option value="<?=$key?>" <?=(isset($_POST['origin']) && $_POST['origin']===$key)?'selected': ($staff['staff_origin'] === $key ? 'selected' : '') ?>><?=$value?></option>
+                            <option value=""></option>
+                            <?php foreach ($origins as $state): ?>
+                                <option value="<?=$state['state_id']?>" <?=(isset($_POST['origin']) && $_POST['origin']=== $state['state_id'])?'selected':($staff['staff_origin'] === $state['state_id'] ? 'selected' : '')?>><?=$state['state_name']?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -110,7 +117,19 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <input type="text" class="form-control" name="lga" id="lga" placeholder="LGA" value="<?= $_POST['lga'] ?? $staff['staff_lga'] ?>">
+
+                        <select name="lga" id="lga" class="form-control select2">
+                            <option value=""></option>
+                            <?php if(isset($_POST['origin'])): ?>
+                                <?php $s_lgas = $s->get_lgas_by('lga_state_id', $_POST['origin']); foreach($s_lgas as $s_lga): ?>
+                                    <option value="<?=$s_lga['lga_id']?>" <?=(isset($_POST['lga']) && $_POST['lga']=== $s_lga['lga_id'])?'selected':''?>><?=$s_lga['lga_name']?></option>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <?php $s_lgas = $s->get_lgas_by('lga_state_id', $staff['staff_origin']); foreach($s_lgas as $s_lga): ?>
+                                    <option value="<?=$s_lga['lga_id']?>" <?=$staff['staff_lga']=== $s_lga['lga_id'] ?'selected':''?>><?=$s_lga['lga_name']?></option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </select>
                     </div>
                 </div>
 
@@ -186,12 +205,12 @@
                 </div>
 
                 <div class="pb-3">
-                    <label for="kin-phone">Next of Phone No</label>
+                    <label for="kin-phone">Next of Kin Phone No</label>
                     <div class="input-group border-bottom pb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <input type="text" class="form-control" name="kin-phone" id="kin-phone" placeholder="Next of Phone No" value="<?= $_POST['kin-phone'] ?? $staff['staff_next_phone'] ?>">
+                        <input type="text" class="form-control" name="kin-phone" id="kin-phone" placeholder="Next of Kin Phone No" value="<?= $_POST['kin-phone'] ?? $staff['staff_next_phone'] ?>">
                     </div>
                 </div>
 
@@ -241,9 +260,10 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <select name="present-rank" id="present-rank" class="form-control">
-                            <?php foreach ($ranks as $key => $value): ?>
-                                <option value="<?=$key?>" <?=(isset($_POST['present-rank']) && $_POST['present-rank']===$key)?'selected':($staff['staff_rank'] === $key ? 'selected' : '')?>><?=$value?></option>
+                        <select name="present-rank" id="present-rank" class="form-control select2">
+                            <option value=""></option>
+                            <?php foreach ($ranks as $rank): ?>
+                                <option value="<?=$rank['rank_id']?>" <?=(isset($_POST['present-rank']) && $_POST['present-rank']===$rank['rank_id'])?'selected':($staff['staff_rank'] === $rank['rank_id'] ? 'selected' : '')?>><?=$rank['rank_rank']?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -255,11 +275,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <select name="present-grade" id="present-grade" class="form-control">
-                            <?php foreach ($grades as $key => $value): ?>
-                                <option value="<?=$key?>" <?=(isset($_POST['present-grade']) && $_POST['present-grade']===$key)?'selected':($staff['staff_grade'] === $key ? 'selected' : '')?>><?=$value?></option>
-                            <?php endforeach; ?>
-                        </select>
+                        <input type="text" name="present-grade" id="present-grade" class="form-control" value="<?=$_POST['present-grade'] ?? $staff['rank_grade']?>" readonly>
                     </div>
                 </div>
 
@@ -269,7 +285,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <select name="cadre" id="cadre" class="form-control">
+                        <select name="cadre" id="cadre" class="form-control select-cadre">
                             <?php foreach ($cadres as $key => $value): ?>
                                 <option value="<?=$key?>" <?=(isset($_POST['cadre']) && $_POST['cadre']===$key)?'selected':($staff['staff_cadre'] === $key ? 'selected' : '')?>><?=$value?></option>
                             <?php endforeach; ?>
@@ -291,7 +307,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <select name="mda" id="mda" class="form-control">
+                        <select name="mda" id="mda" class="form-control select2">
                             <?php foreach ($mdas as $key => $value): ?>
                                 <option value="<?=$value['mda_id']?>" <?=(isset($_POST['mda']) && $_POST['mda']===$value['mda_id'])?'selected':($staff['staff_mda_id'] === $value['mda_id'] ? 'selected' : '')?>><?=$value['mda_name']?></option>
                             <?php endforeach; ?>
@@ -315,7 +331,12 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <input type="text" class="form-control" name="last-posting" id="last-posting" placeholder="Last Posting" value="<?= $_POST['last-posting'] ?? $staff['staff_last_posting'] ?>">
+                        <select name="last-posting" id="last-posting" class="form-control select2">
+                            <option value=""></option>
+                            <?php foreach ($mdas as $key => $value): ?>
+                                <option value="<?=$value['mda_id']?>" <?=(isset($_POST['last-posting']) && $_POST['last-posting']===$value['mda_id'])?'selected':($staff['staff_last_posting'] === $value['mda_id'] ? 'selected' : '')?>><?=$value['mda_name']?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                 </div>
 
@@ -325,7 +346,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <input type="text" class="form-control" name="duration-mda" id="duration-mda" placeholder="Duraion in MDA" value="<?= $_POST['duration-mda'] ?? $staff['staff_duration'] ?>">
+                        <input type="text" class="form-control disabled" name="duration-mda" id="duration-mda" placeholder="Duration in MDA" value="<?= $_POST['duration-mda'] ?? '' ?>" readonly>
                     </div>
                 </div>
 
@@ -375,7 +396,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <select name="bank" id="bank" class="form-control">
+                        <select name="bank" id="bank" class="form-control select2">
                             <option value=""></option>
                             <?php foreach ($banks as $key => $value): ?>
                                 <option value="<?=$key?>" <?=(isset($_POST['bank']) && $_POST['bank']===$value)?'selected':($staff['staff_bank'] === $key ? 'selected' : '')?>><?=$value?></option>
@@ -396,11 +417,9 @@
                 
                 <div class="pb-3">
                     <label for="membership">Membership to professional bodies</label>
-                    <div class="input-group border-bottom pb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
-                        </div>
-                        <input type="text" class="form-control" name="membership" id="membership" placeholder="Membership to professional bodies" value="<?= $_POST['membership'] ?? $staff['staff_membership'] ?>">
+                    <div class="input-group border-bottom pb-3">   
+                        <div class="simple-tags" id="membership-fields" data-simple-tags="<?= $_POST['membership'] ?? $staff['staff_membership'] ?>"></div>
+                        <input type="hidden" name="membership" id="membership" value="<?= $_POST['membership'] ?? $staff['staff_membership'] ?>">
                     </div>
                 </div>
                 
@@ -410,7 +429,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <select name="fund-admin" id="fund-admin" class="form-control">
+                        <select name="fund-admin" id="fund-admin" class="form-control select-admin">
                             <option value=""></option>
                             <?php foreach ($fund_admins as $key => $value): ?>
                                 <option value="<?=$key?>" <?=(isset($_POST['fund-admin']) && $_POST['fund-admin']===$value)?'selected':($staff['staff_fund_admin'] === $key ? 'selected' : '')?>><?=$value?></option>
@@ -465,23 +484,32 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-circle-o-notch"></i></span>
                         </div>
-                        <select name="nhis" id="nhis" class="form-control">
-                            <option value=""></option>
+                        <select name="nhis" id="nhis" class="form-control select-nhis">
                             <?php foreach ($nhis_hospitals as $key => $value): ?>
                                 <option value="<?=$key?>" <?=(isset($_POST['nhis']) && $_POST['nhis']===$value)?'selected':($staff['staff_nhis_hospital'] === $key ? 'selected' : '')?>><?=$value?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="pb-3">
+                    <label for="e" class="form-label">Insert Passport</label>
                     <div>
                         <label for="passport-image">
                             <img src="<?=URL?>/static/images/<?=$staff['staff_passport'] ? 'uploads/'.$staff['staff_passport'] : 'no_picture.jpg'?>" alt="picture" class="passportimg" id="picture">
                         </label>
                     </div>
-                    <label for="passport-image" class="form-label">Update Passport</label>
-                    <input class="form-control" type="file" id="passport-image" name="passport-image" accept="image/*" onchange="loadFile(event)">
+                    <div class="row align-items-end">
+                        <div class="col">
+                            <label for="passport-image"><small class="badge">Upload photo</small></label>
+                            <input class="form-control" type="file" id="passport-image" name="passport-image" accept="image/*" onchange="loadFile(event)">
+                            <input type="hidden" name="snapfile" id="snapfile" value="">
+                        </div>
+                        <div class="col-auto border-right border-left">OR</div>
+                        <div class="col">
+                            <button type="button" class="btn btn-danger" id="takePhotoBtn"><i class="fa fa-camera"></i> Take photo</button>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -498,7 +526,160 @@
     </div>
 </div>
 
+
+<div class="modal fade" id="takePhoto" tabindex="-1" aria-labelledby="takePhotoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="takePhotoLabel">Take a photo</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <img src="" class="d-none mb-2" id="preview" alt="Preview" style="width:460px;height:460px;">
+                        <video id="webcam" autoplay playsinline width="460" height="460"></video>
+                        <canvas id="canvas" class="d-none"></canvas>
+                    </div>
+                    <div class="col-12 text-center">
+                        <button type="button" class="btn btn-sm btn-success" id="snap"><i class="fa fa-camera"></i> Snap</button>
+                        <button type="button" class="btn btn-sm btn-danger d-none" id="takeagain"><i class="fa fa-repeat"></i> take again</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" src="https://unpkg.com/webcam-easy/dist/webcam-easy.min.js"></script>
+<script src="<?=URL?>/static/js/script-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
 <script>
+
+    let state_lgas = {<?php foreach ($origins as $state): $s_lgas = $s->get_lgas_by('lga_state_id', $state['state_id']); ?>
+        '<?=$state['state_id']?>': [<?php foreach ($s_lgas as $s_lga): ?>{'id':'<?=$s_lga['lga_id']?>', 'text':"<?=$s_lga['lga_name']?>"},<?php endforeach?>],
+        <?php endforeach; ?>};
+
+    $('#origin').on('change', (e) => {
+        let state_data = state_lgas[e.target.value];
+        $('#lga').html('').select2({
+            data: state_data
+        })
+    })
+
+
+    function dateDiff(startingDate, endingDate) {
+        var startDate = new Date(new Date(startingDate).toISOString().substr(0, 10));
+        if (!endingDate) {
+            endingDate = new Date().toISOString().substr(0, 10);    // need date in YYYY-MM-DD format
+        }
+        var endDate = new Date(endingDate);
+        if (startDate > endDate) {
+            var swap = startDate;
+            startDate = endDate;
+            endDate = swap;
+        }
+        var startYear = startDate.getFullYear();
+        var february = (startYear % 4 === 0 && startYear % 100 !== 0) || startYear % 400 === 0 ? 29 : 28;
+        var daysInMonth = [31, february, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+        var yearDiff = endDate.getFullYear() - startYear;
+        var monthDiff = endDate.getMonth() - startDate.getMonth();
+        if (monthDiff < 0) {
+            yearDiff--;
+            monthDiff += 12;
+        }
+        var dayDiff = endDate.getDate() - startDate.getDate();
+        if (dayDiff < 0) {
+            if (monthDiff > 0) {
+                monthDiff--;
+            } else {
+                yearDiff--;
+                monthDiff = 11;
+            }
+            dayDiff += daysInMonth[startDate.getMonth()];
+        }
+
+        return yearDiff + ' Years ' + monthDiff + ' Months ' + dayDiff + ' Days';
+    }
+
+    $('#mda-posted').on('change', (e) => {
+        var starts = new Date($('#mda-posted').val());
+        var ends = new Date();
+        var diff = dateDiff(starts, ends);
+        $('#duration-mda').val(diff);
+    })
+
+    let grades = {<?php foreach($ranks as $rank): ?> '<?=$rank['rank_id']?>': '<?=$rank['rank_grade']?>', <?php endforeach; ?>};
+
+    $('#present-rank').on('change', (e) => {
+        $('#present-grade').val(grades[$('#present-rank').val()]);
+    })
+
+
+    $(document).ready(function() {
+        $('.select2').select2();
+        $('.select-nationality').select2({tags: true});
+        $('.select-admin').select2({tags: true});
+        $('.select-nhis').select2({tags: true});
+        $('.select-cadre').select2({tags: true});
+
+        var posted_date = $('#mda-posted').val();
+        if (posted_date !== "") {
+            var starts = new Date(posted_date);
+            var ends = new Date();
+            var diff = dateDiff(starts, ends);
+            $('#duration-mda').val(diff);
+        }
+    });
+
+    const takephotobtn = document.getElementById('takePhotoBtn');
+    const webcamElement = document.getElementById('webcam');
+    const canvasElement = document.getElementById('canvas');
+    const webcam = new Webcam(webcamElement, 'user', canvasElement, null);
+
+    takephotobtn.addEventListener('click', (e) => {
+        webcam.start()
+        .then(result =>{
+            console.log("webcam started.");
+            $('#takePhoto').modal('show');
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    })
+
+    $('#takePhoto').on('hide.bs.modal', (e) => {
+        webcam.stop();
+    })
+
+    $('#snap').on('click', (e) => {
+        var picture = webcam.snap();
+        document.querySelector('#picture').src = picture;
+        document.querySelector('#preview').src = picture;
+        
+        $('#snapfile').val(picture);
+
+        $(webcamElement).addClass('d-none');
+        $('#preview').removeClass('d-none');
+        $('#snap').addClass('d-none');
+        $('#takeagain').removeClass('d-none');
+    })
+
+    $('#takeagain').on('click', (e)=> {
+        $(webcamElement).removeClass('d-none');
+        $('#preview').addClass('d-none');
+        $('#snap').removeClass('d-none');
+        $('#takeagain').addClass('d-none');
+    })
+
     const loadFile = function(event) {
         let output = document.getElementById('picture');
         output.src = URL.createObjectURL(event.target.files[0]);

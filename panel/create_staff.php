@@ -26,6 +26,7 @@ $lgas = $staff->get_all_lgas();
 $marritals = ['S' => 'Single', 'M' => 'Married'];
 $ranks = $staff->get_all_ranks();
 $cadres = $staff->get_all_cadre();
+$nationalities = $staff->get_all_nationalities();
 $mdas = $mda->get_all();
 $banks = $staff->get_all_banks();
 $fund_admins = [];

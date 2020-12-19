@@ -57,7 +57,27 @@ class Staff
     }
 
     public function get_all_cadre() {
-        return ['Admin' => 'Admin', 'Executive' => 'Executive'];
+        return [
+            'Administrative Officers' => 'Administrative Officers', 
+            'Computer Engineers' => 'Computer Engineers',
+            'Confidential Secretaries' => 'Confidential Secretaries',
+            'Data Processing Officers' => 'Data Processing Officers',
+            'Executive Officers' => 'Executive Officers',
+            'Librarian' => 'Librarian',
+            'Library Officers' => 'Library Officers',
+            'Programme Analyst' => 'Programme Analyst',
+            'Statistical Officers' => 'Statistical Officers',
+            'Statistician' => 'Statistician',
+            'Stock Verifiers' => 'Stock Verifiers',
+            'Store Officers' => 'Store Officers'
+        ];
+    }
+    
+    public function get_all_nationalities()
+    {
+        return [
+            'Nigerian' => 'Nigerian'
+        ];
     }
 
     public function get_all_origins()
@@ -202,6 +222,7 @@ class Staff
     {
         $filtered = [];
         $changes = "";
+        $raw = "";
         foreach ($data as $field => $value) {
             $filtered[$field] = normal_text($value);
         }
@@ -215,7 +236,12 @@ class Staff
         foreach ($field_set as $field => $column) {
             if (!(empty($filtered[$field]) && $staff['staff_'.$column] === NULL)) {
                 if ($filtered[$field] !== $staff['staff_'.$column]) {
-                    $changes .= $field_name_set[$column] . ", ";
+                    if (!empty($changes)) {
+                        $changes .= ", ";
+                        $raw .= ", ";
+                    }
+                    $changes .= $field_name_set[$column];
+                    $raw .= $field_name_set[$column] . " {" . $staff['staff_'.$column] . " | " . $filtered[$field] . "} ";
                 }
             }
             if ($c > 0) {
@@ -234,7 +260,10 @@ class Staff
             $qs .= ", `staff_passport` = '".$image_status['message']."'";
         }
         if ($image_status['code'] !== 1) {
-            $changes .= " passport picture";
+            if (!empty($changes)) {
+                $changes .= ", ";
+            }
+            $changes .= "passport picture";
         }
 
         if ($changes !== "") {
@@ -244,12 +273,27 @@ class Staff
             $s->bindParam(":si", $staff['staff_id']);
     
             if ($s->execute()) {
+                $this->insert_staff_changelog($staff['staff_id'], $user_id, $changes, $raw);
                 return $this->_r(true, "Record is successfully updated!, You have changed: " . $changes);
             }
             return $this->_r(false, "Unable to update the record.");
         }
 
         return $this->_r(true, "You didn't changed anything!");
+    }
+
+    public function insert_staff_changelog ($staff_id, $user_id, $text, $raw)
+    {
+        $q = "INSERT `staff_changes` (`change_user_id`, `change_staff_id`, `change_text`, `change_raw`, `change_created`) VALUE (:u, :s, :t, :r, :c)";
+        $s = $this->db->prepare($q);
+        $s->bindParam(':u', $user_id);
+        $s->bindParam(':s', $staff_id);
+        $s->bindParam(':t', $text);
+        $s->bindParam(':r', $raw);
+        $datetime = current_date();
+        $s->bindParam(':c', $datetime);
+        
+        return $s->execute();
     }
 
     public function create_file ()
